@@ -1,0 +1,30 @@
+{
+  "name": "pl-reader",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/filderschoice/pl-reader.git"
+  },
+  "keywords": [
+    "playwright",
+    "node.js"
+  ],
+  "author": "filderschoice",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/filderschoice/pl-reader/issues"
+  },
+  "homepage": "https://github.com/filderschoice/pl-reader#readme",
+  "devDependencies": {
+    "js-yaml": "^4.1.0",
+    "playwright": "^1.25.0"
+  },
+  "dependencies": {
+    "mkdirp": "^1.0.4"
+  }
+}
