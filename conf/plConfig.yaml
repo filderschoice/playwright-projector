@@ -1,0 +1,11 @@
+# Playwright Options
+proxyInfo: []
+headless: false
+timeout: 30000
+slowMo: 10
+locale: 'jp-JP'
+auth: null
+screenshot:
+  dir: './ss'
+  type: 'jpeg'
+  quality: 70
