@@ -1,3 +1,6 @@
+#######################
+# Playwright Operation Scenarios
+#######################
 - # Scenario
   type: 'goto'
   url: 'https://www.google.com/?hl=ja'

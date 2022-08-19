@@ -1,17 +1,14 @@
 const { chromium, firefox, webkit } = require('playwright')
 const plUtil = require('../utils/plUtil')
-
-// Playwright基底関数
 const PlaywrightCores = {}
 
 /**
- * 定数
+ * Variable
  */
-// ブラウザ起動パラメータ
+// Browser Info
 PlaywrightCores.browserType = chromium
 PlaywrightCores.browserArgs = [
-  // flag追加
-  // フラグ参考： https://peter.sh/experiments/chromium-command-line-switches/
+  // flag reference: https://peter.sh/experiments/chromium-command-line-switches/
   '--allow-external-pages',
   '--allow-http-background-page',
   '--allow-http-screen-capture',
@@ -29,15 +26,14 @@ PlaywrightCores.browserArgs = [
   '-wait-for-browser'
 ]
 
-// page viewport表示域
+// Page Info
 PlaywrightCores.defaultViewport = { width: 1366, height: 700 }
-// page SS情報
 PlaywrightCores.ssFilename = 'pl-reader'
 PlaywrightCores.ssNumber = 0
 
 /**
- * Browser type設定
- * @param type ブラウザ種別
+ * Setting Browser type
+ * @param type Browser type(chromium/firefox/webkit)
  */
 PlaywrightCores.setBrowserType = function (type = 'chromium') {
   switch (type) {
@@ -55,17 +51,18 @@ PlaywrightCores.setBrowserType = function (type = 'chromium') {
 }
 
 /**
- * Browser args取得
- * @param proxyInfo proxy情報
+ * Getting Browser args
+ * @param proxyInfo Proxy Info
  */
 PlaywrightCores.getArgs = function (proxyInfo = []) {
   let ret = PlaywrightCores.browserArgs
+  // Set Proxy
   if (proxyInfo.length == 0) {
     // No Proxy
     ret.push('--no-proxy-server')
   } else {
-    // Proxy Setting
-    proxyInfo.forEach(proxy => {
+    // Add Proxy
+    proxyInfo.forEach((proxy) => {
       ret.push(proxy)
     })
   }
@@ -73,162 +70,165 @@ PlaywrightCores.getArgs = function (proxyInfo = []) {
 }
 
 /**
- * browserServer起動
- * @param headless headlessフラグ
- * @param timeout browserタイムアウト値
- * @param args browser起動引数
- * @param slowMo 遅延値
- * @returns browser情報
+ * Launch Server
+ * @param headless Headless Flag
+ * @param timeout Browser Timeout
+ * @param args Browser args
+ * @param slowMo SlowMo
+ * @returns browserServer
  */
 PlaywrightCores.launchServer = async function (headless = false, timeout = 60000, args = [], slowMo = 10) {
-  // browserServer起動
+  // launch browserServer
   let browserServer = await PlaywrightCores.browserType.launchServer({
     headless,
     timeout,
     args,
     slowMo
   })
-
-  // browserServer返却
   return browserServer
 }
 
 /**
- * endpoint情報取得
- * @param browserServer browserServer
+ * Getting BrowserServer Endpoint
+ * @param browserServer BrowserServer
  * @returns endpoint
  */
 PlaywrightCores.getEndpoint = async function (browserServer) {
-  // endpoint情報取得
+  // get endpoint
   let wsEndpoint = await browserServer.wsEndpoint()
-
-  // endpoint情報返却
   return wsEndpoint
 }
 
 /**
- * browser接続
- * @param wsEndpoint endpoint
- * @returns browser情報
+ * Connecting Browser
+ * @param wsEndpoint Endpoint
+ * @returns browser
  */
 PlaywrightCores.connectBrowser = async function (wsEndpoint) {
-  // browser接続
+  // connect Browser
   let browser = await PlaywrightCores.browserType.connect({
     wsEndpoint
   })
-
-  // browser情報返却
   return browser
 }
 
 /**
- * Context情報作成
- * @param browser browser情報
- * @param locale locale情報
- * @returns context情報
+ * Create New Context
+ * @param browser Browser
+ * @param locale Locale
+ * @param auth Auth
+ * @returns context
  */
 PlaywrightCores.newContext = async function (browser, locale = 'ja-JP', auth = null) {
-  // option情報作成
+  // set optionInfo
   const option = {
     ignoreHTTPSErrors: true,
     locale: locale
   }
+  // set auth
   if (auth != null) {
-    // 認証情報あり
-    option.httpCredentials = { username: auth.username, password: auth.password }
+    // add httpCredentials
+    option.httpCredentials = {
+      username: auth.username,
+      password: auth.password
+    }
   }
-  // Context情報作成
+  // Create Context
   const context = await browser.newContext(option)
-  // Context情報返却
   return context
 }
 
 /**
- * Playwright終了
+ * Close BrowserServer
+ * @param browserServer BrowserServer
  */
 PlaywrightCores.close = async function (browserServer) {
   // wait
   await new Promise((resolve) => setTimeout(resolve, 1000))
   try {
-    // browserServerクローズ
+    // close browserServer
     await browserServer.close()
   } catch (e) {
-    // 例外発生時
+    // catch exception
     console.log('playwright ended.')
   }
 }
 
 /**
- * Pageパラメータ設定
- * @param page page情報
- * @param param pageパラメータ情報
+ * Setting Page Params
+ * @param page Page
+ * @param param Page Params
  */
 PlaywrightCores.setPageParameter = async function (page, param) {
-  // タイムアウト値変更
+  // set defaultTimeout
   await page.setDefaultTimeout(param.timeout)
 }
 
 /**
- * 操作page情報取得
- * @param browser browser情報
- * @returns page情報
+ * Getting OperatePage
+ * @param browser Browser
+ * @returns page
  */
 PlaywrightCores.getOperatePage = async function (context) {
+  // get pages
   let pages = await context.pages()
   let page = null
   if (pages.length === 0) {
-    // page未表示の場合、新規ページオープン
+    // no pages: set newPage
     page = await context.newPage()
   } else {
-    // 表示中のpageから対象pageを特定
+    // page exist: get firstPage
     let usePageIdx = 0
     for (let idx = 0; idx < pages.length; idx++) {
       const page = pages[idx]
       if (page.url() !== 'about:brank') {
-        // 使用中page情報保持
+        // get operation page
         usePageIdx = idx
         break
       }
     }
-    // page情報を保持
+    // set oparatePage
     page = pages[usePageIdx]
   }
   return page
 }
 
 /**
- * Screenshotナンバー取得
- * @return Screenshotナンバー
+ * Getting Screenshot Number
+ * @return screenshot number
  */
 PlaywrightCores.getSsNumber = function () {
   let ret = this.ssNumber
-  // インクリメント
+  // increment screenshot number
   this.ssNumber++
   return ret
 }
 
 /**
- * Screenshotファイルパス取得
- * @param page page情報
- * @param scenario scenario情報
+ * Getting Screenshot FileName
+ * @param baseFileName BaseFileName
+ * @param number Screenshot Number
+ * @param type File Ext Type
+ * @return screenshot fileName
  */
-PlaywrightCores.mkSsPath = function (baseFileName, number = 0, type = 'jpeg') {
-  // 桁数
+PlaywrightCores.mkSsFileName = function (baseFileName, number = 0, type = 'jpeg') {
+  // offset
   let len = 3
   return baseFileName + '_' + (Array(len).join('0') + number).slice(-len) + '.' + type
 }
 
 /**
- * page操作処理
- * @param page page情報
- * @param scenario scenario情報
+ * Execute Operation Page
+ * @param page Page
+ * @param scenario Scenario
+ * @param options Options
  */
 PlaywrightCores.execOperationPage = async function (page, scenario, options) {
   if (plUtil.isEmpty(scenario.type)) {
-    // 処理なし
+    // Not Operation type
     return
   }
-  switch(scenario.type) {
+  switch (scenario.type) {
     case 'goto':
       // page.goto
       await page.goto(scenario.url)
@@ -236,7 +236,11 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
     case 'screenshot':
       // page.screenshot
       const ssOption = plUtil.isNotEmpty(scenario.options) ? scenario.options : options.screenshot
-      ssOption.path = this.mkSsPath(plUtil.pathJoin(ssOption.dir, this.ssFilename), this.getSsNumber(), ssOption.type)
+      ssOption.path = this.mkSsFileName(
+        plUtil.pathJoin(ssOption.dir, this.ssFilename),
+        this.getSsNumber(),
+        ssOption.type
+      )
       await page.screenshot(ssOption)
       break
     case 'wait':
@@ -244,7 +248,7 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
       await new Promise((resolve) => setTimeout(resolve, scenario.time))
       break
     default:
-      // その他
+      // other
       break
   }
 }

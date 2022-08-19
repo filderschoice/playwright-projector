@@ -1,16 +1,17 @@
-// Playwright実行
+// Run Playwright
 const runPl = require('./runPlaywright')
-// 共通関数
+// Util
 const plUtil = require('./utils/plUtil')
 
-// Config Read
+// Scenario Read
 const plScenarios = plUtil.readFileSync('./conf/plScenarios.yaml', 'yaml')
+// Config Read
 const plOption = plUtil.readFileSync('./conf/plConfig.yaml', 'yaml')
 
-// main関数
-const main = async function() {
+// main
+const main = async function () {
   await runPl.exec(plScenarios, plOption)
 }
 
-// 処理開始
+// exec main
 main()
