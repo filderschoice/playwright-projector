@@ -21,8 +21,12 @@
   },
   "homepage": "https://github.com/filderschoice/pl-reader#readme",
   "devDependencies": {
+    "eslint": "^8.22.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-node": "^11.1.0",
     "js-yaml": "^4.1.0",
-    "playwright": "^1.25.0"
+    "playwright": "^1.25.0",
+    "prettier": "^2.7.1"
   },
   "dependencies": {
     "mkdirp": "^1.0.4"
