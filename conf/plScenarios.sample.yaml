@@ -1,0 +1,20 @@
+#######################
+# Playwright Operation Scenarios
+#######################
+- # Scenario
+  type: 'goto'
+  url: 'https://www.google.com/?hl=ja'
+
+- # Scenario
+  type: 'screenshot'
+
+- # Scenario
+  type: 'wait'
+  time: 1000
+
+- # Scenario
+  type: 'screenshot'
+
+- # Scenario
+  type: 'dummy'
+  sample: 'test'
