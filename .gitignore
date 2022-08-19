@@ -1,5 +1,7 @@
 # User
 ss/*
+conf/plConfig.yaml
+conf/plScenarios.yaml
 
 # Logs
 logs
