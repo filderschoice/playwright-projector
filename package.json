@@ -27,6 +27,7 @@
     "prettier": "^2.7.1"
   },
   "dependencies": {
+    "commander": "^9.4.0",
     "js-yaml": "^4.1.0",
     "mkdirp": "^1.0.4",
     "playwright": "^1.25.0"
