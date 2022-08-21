@@ -229,9 +229,37 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
     return
   }
   switch (scenario.type) {
+    case 'conditions':
+      let condSelector
+      switch (scenario.subType) {
+        case 'click':
+          condSelector = await page.$$(scenario.selector)
+          await condSelector[scenario.selectorIndex].click()
+          break
+        default:
+          break
+      }
+      break
     case 'goto':
       // page.goto
       await page.goto(scenario.url)
+      break
+    case 'input':
+      // check selector
+      let inputSelector = await page.$$(scenario.selector)
+      if (plUtil.isNotEmpty(inputSelector)) {
+        // exist selector: type/insertText
+        await inputSelector[0].type('')
+        await page.keyboard.insertText(scenario.value)
+      }
+      break
+    case 'submit':
+      // check selector
+      let submitSelector = await page.$$(scenario.selector)
+      if (plUtil.isNotEmpty(submitSelector)) {
+        // exist selector: click
+        await submitSelector[0].click()
+      }
       break
     case 'screenshot':
       // page.screenshot
