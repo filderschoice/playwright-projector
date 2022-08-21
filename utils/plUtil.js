@@ -102,16 +102,20 @@ plUtil.readFileSync = function (filePath, type = 'json', option = {}) {
   }
   if (fs.existsSync(filePath)) {
     ret = fs.readFileSync(filePath, 'utf-8')
-    if (type === 'json') {
-      // read json file: JSON parse
-      ret = JSON.parse(ret)
-    } else if (type === 'yaml') {
-      // read yaml file: YAML2JSON
-      ret = JSON.stringify(yaml.load(ret))
-      // JSON parse
-      ret = JSON.parse(ret)
-    } else {
-      // other: option
+    try {
+      if (type === 'json') {
+        // read json file: JSON parse
+        ret = JSON.parse(ret)
+      } else if (type === 'yaml') {
+        // read yaml file: YAML2JSON
+        ret = JSON.stringify(yaml.load(ret))
+        // JSON parse
+        ret = JSON.parse(ret)
+      } else {
+        // other: option
+      }
+    } catch (e) {
+      console.log(e)
     }
   }
   return ret
