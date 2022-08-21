@@ -2,6 +2,7 @@
 ss/*
 conf/plConfig.yaml
 conf/plScenarios.yaml
+conf/custom/*
 
 # Logs
 logs
