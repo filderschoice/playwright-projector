@@ -6,12 +6,12 @@ const pkg = require('./package.json')
 // cli args
 cmd
   .version(pkg.version)
-  .option('-c, --config <configFile>', 'Use pl-leader Config File', './conf/plConfig.yaml')
-  .option('-s, --scenario <scenarioFile>', 'Use pl-leader Scenarios File', './conf/plScenarios.yaml')
+  .option('-c, --config <configFile>', 'Use pl-projector Config File', './conf/plConfig.yaml')
+  .option('-s, --scenario <scenarioFile>', 'Use pl-projector Scenarios File', './conf/plScenarios.yaml')
   .parse(process.argv)
 const option = cmd.opts()
 
-plUtil.logInfo('pl-reader start')
+plUtil.logInfo('pl-projector start')
 plUtil.logInfo('  - config: ' + option.config)
 plUtil.logInfo('  - scenario: ' + option.scenario)
 // Scenario Read

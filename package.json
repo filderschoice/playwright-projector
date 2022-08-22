@@ -1,5 +1,5 @@
 {
-  "name": "pl-reader",
+  "name": "pl-projector",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/filderschoice/pl-reader.git"
+    "url": "git+https://github.com/filderschoice/pl-projector.git"
   },
   "keywords": [
     "playwright",
@@ -18,9 +18,9 @@
   "author": "filderschoice",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/filderschoice/pl-reader/issues"
+    "url": "https://github.com/filderschoice/pl-projector/issues"
   },
-  "homepage": "https://github.com/filderschoice/pl-reader#readme",
+  "homepage": "https://github.com/filderschoice/pl-projector#readme",
   "devDependencies": {
     "eslint": "^8.22.0",
     "eslint-config-prettier": "^8.5.0",

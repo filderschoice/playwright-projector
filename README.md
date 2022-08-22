@@ -1,1 +1,1 @@
-# pl-reader
+# pl-projector
