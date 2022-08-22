@@ -234,7 +234,10 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
       switch (scenario.subType) {
         case 'click':
           condSelector = await page.$$(scenario.selector)
-          await condSelector[scenario.selectorIndex].click()
+          if (plUtil.isNotEmpty(condSelector) && scenario.selectorIndex <= condSelector.length) {
+            // exist selector: click
+            await condSelector[scenario.selectorIndex].click()
+          }
           break
         default:
           break
@@ -274,6 +277,10 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
     case 'wait':
       // wait
       await new Promise((resolve) => setTimeout(resolve, scenario.time))
+      break
+    case 'waitForURL':
+      // waitForURL
+      await page.waitForURL(scenario.url)
       break
     default:
       // other
