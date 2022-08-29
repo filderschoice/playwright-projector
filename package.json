@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/filderschoice/pl-projector#readme",
   "devDependencies": {
-    "eslint": "^8.22.0",
+    "eslint": "^8.23.0",
     "eslint-config-prettier": "^8.5.0",
     "prettier": "^2.7.1"
   },
@@ -30,6 +30,6 @@
     "commander": "^9.4.0",
     "js-yaml": "^4.1.0",
     "mkdirp": "^1.0.4",
-    "playwright": "^1.25.0"
+    "playwright": "^1.25.1"
   }
 }
