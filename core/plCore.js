@@ -9,18 +9,18 @@ const PlaywrightCores = {}
 PlaywrightCores.browserType = chromium
 PlaywrightCores.browserArgs = [
   // flag reference: https://peter.sh/experiments/chromium-command-line-switches/
-  '--allow-external-pages',
-  '--allow-http-background-page',
-  '--allow-http-screen-capture',
-  '--allow-insecure-localhost',
-  '--disble-gpu',
-  '--disble-dev-shm-usage',
-  '--disble-setuid-sandbox',
-  '--no-first-run',
-  '--no-sandbox',
-  '--no-zygote',
-  '--mute-audio',
-  '--js-flags=--expose-gc',
+  // '--allow-external-pages',
+  // '--allow-http-background-page',
+  // '--allow-http-screen-capture',
+  // '--allow-insecure-localhost',
+  // '--disble-gpu',
+  // '--disble-dev-shm-usage',
+  // '--disble-setuid-sandbox',
+  // '--no-first-run',
+  // '--no-sandbox',
+  // '--no-zygote',
+  // '--mute-audio',
+  // '--js-flags=--expose-gc',
   '--lang=ja',
   '--window-size=1390,840',
   '-wait-for-browser'
@@ -115,23 +115,27 @@ PlaywrightCores.connectBrowser = async function (wsEndpoint) {
 /**
  * Create New Context
  * @param browser Browser
- * @param locale Locale
- * @param auth Auth
+ * @param options options
  * @returns context
  */
-PlaywrightCores.newContext = async function (browser, locale = 'ja-JP', auth = null) {
+PlaywrightCores.newContext = async function (browser, options = {}) {
   // set optionInfo
   const option = {
     ignoreHTTPSErrors: true,
-    locale: locale
+    locale: options.locale || 'jp-JP'
   }
   // set auth
-  if (auth != null) {
+  if (plUtil.isNotEmpty(options.auth)) {
     // add httpCredentials
     option.httpCredentials = {
-      username: auth.username,
-      password: auth.password
+      username: options.auth.username,
+      password: options.auth.password
     }
+  }
+  // set video
+  if (plUtil.isNotEmpty(options.video)) {
+    // add video
+    option.recordVideo = { dir: 'videos/' }
   }
   // Create Context
   const context = await browser.newContext(option)

@@ -13,7 +13,7 @@ runPlaywright.exec = async (scenarios = [], options = {}) => {
   const browserServer = await plCore.launchServer(options.headless, options.timeout, browserArgs, options.slowMo)
   const wsEndpoint = await plCore.getEndpoint(browserServer)
   const browser = await plCore.connectBrowser(wsEndpoint)
-  const context = await plCore.newContext(browser, options.locale, options.auth)
+  const context = await plCore.newContext(browser, options)
   const page = await plCore.getOperatePage(context)
 
   if (plUtil.isNotEmpty(scenarios)) {
@@ -31,6 +31,10 @@ runPlaywright.exec = async (scenarios = [], options = {}) => {
   // End Playwright
   await page.close()
   await context.close()
+  if (plUtil.isNotEmpty(options.video) && plUtil.isNotEmpty(options.video.file)) {
+    // video保存
+    await page.video().saveAs(plUtil.pathJoin('videos/', options.video.file + '.webm'))
+  }
   await plCore.close(browserServer)
   // output end log
   plUtil.logInfo('runPlaywright.exec end')
