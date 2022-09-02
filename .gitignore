@@ -3,7 +3,9 @@ ss/*
 videos/*
 conf/plConfig.yaml
 conf/plScenarios.yaml
-conf/custom/*
+conf/custom/*yaml
+conf/auth/plAuth.yaml
+.vscode/*
 
 # Logs
 logs
