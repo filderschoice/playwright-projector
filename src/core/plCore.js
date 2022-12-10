@@ -1,5 +1,5 @@
 const { chromium, firefox, webkit } = require('playwright')
-const plUtil = require('../utils/plUtil')
+const plUtil = reqlib('/src/utils/plUtil')
 const PlaywrightCores = {}
 
 /**

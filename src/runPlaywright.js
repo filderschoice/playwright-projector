@@ -1,7 +1,6 @@
-// Util
-const plUtil = require('./utils/plUtil')
-// Playwright Core
-const plCore = require('./core/plCore')
+// require by app-root-path
+const plCore = reqlib('/src/core/plCore')
+const plUtil = reqlib('/src/utils/plUtil')
 
 const runPlaywright = {}
 runPlaywright.exec = async (scenarios = [], options = {}) => {

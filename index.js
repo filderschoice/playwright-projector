@@ -1,7 +1,10 @@
-const runPl = require('./runPlaywright')
-const plUtil = require('./utils/plUtil')
+// require
+global.reqlib = require('app-root-path').require
 const cmd = require('commander')
-const pkg = require('./package.json')
+// require by app-root-path
+const runPl = reqlib('/src/runPlaywright')
+const plUtil = reqlib('/src/utils/plUtil')
+const pkg = reqlib('/package.json')
 
 // cli args
 cmd
