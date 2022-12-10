@@ -28,7 +28,7 @@ PlaywrightCores.browserArgs = [
 
 // Page Info
 PlaywrightCores.defaultViewport = { width: 1366, height: 700 }
-PlaywrightCores.ssFilename = 'pl-projector'
+PlaywrightCores.ssFilename = 'playwright-projector'
 PlaywrightCores.ssNumber = 0
 
 /**

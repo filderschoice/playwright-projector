@@ -1,1 +1,1 @@
-# pl-projector
+# playwright-projector

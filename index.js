@@ -6,13 +6,13 @@ const pkg = require('./package.json')
 // cli args
 cmd
   .version(pkg.version)
-  .option('-a, --auth <authFile>', 'Use pl-projector Auth File', './conf/auth/plAuth.yaml')
-  .option('-c, --config <configFile>', 'Use pl-projector Config File', './conf/plConfig.yaml')
-  .option('-s, --scenario <scenarioFile>', 'Use pl-projector Scenarios File', './conf/plScenarios.yaml')
+  .option('-a, --auth <authFile>', 'Use playwright-projector Auth File', './conf/auth/plAuth.yaml')
+  .option('-c, --config <configFile>', 'Use playwright-projector Config File', './conf/plConfig.yaml')
+  .option('-s, --scenario <scenarioFile>', 'Use playwright-projector Scenarios File', './conf/plScenarios.yaml')
   .parse(process.argv)
 const option = cmd.opts()
 
-plUtil.logInfo('pl-projector start')
+plUtil.logInfo('playwright-projector start')
 plUtil.logInfo('  - config: ' + option.config)
 plUtil.logInfo('  - auth: ' + option.auth)
 plUtil.logInfo('  - scenario: ' + option.scenario)
