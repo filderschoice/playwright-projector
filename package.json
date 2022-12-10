@@ -1,5 +1,5 @@
 {
-  "name": "pl-projector",
+  "name": "playwright-projector",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/filderschoice/pl-projector.git"
+    "url": "git+https://github.com/filderschoice/playwright-projector.git"
   },
   "keywords": [
     "playwright",
@@ -18,18 +18,18 @@
   "author": "filderschoice",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/filderschoice/pl-projector/issues"
+    "url": "https://github.com/filderschoice/playwright-projector/issues"
   },
-  "homepage": "https://github.com/filderschoice/pl-projector#readme",
+  "homepage": "https://github.com/filderschoice/playwright-projector#readme",
   "devDependencies": {
-    "eslint": "^8.23.0",
+    "eslint": "^8.29.0",
     "eslint-config-prettier": "^8.5.0",
-    "prettier": "^2.7.1"
+    "prettier": "^2.8.1"
   },
   "dependencies": {
-    "commander": "^9.4.0",
+    "commander": "^9.4.1",
     "js-yaml": "^4.1.0",
     "mkdirp": "^1.0.4",
-    "playwright": "^1.25.1"
+    "playwright": "^1.28.1"
   }
 }
