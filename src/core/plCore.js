@@ -135,7 +135,7 @@ PlaywrightCores.newContext = async function (browser, options = {}) {
   // set video
   if (plUtil.isNotEmpty(options.video)) {
     // add video
-    option.recordVideo = { dir: 'videos/' }
+    option.recordVideo = { dir: 'result/videos/' }
   }
   // Create Context
   const context = await browser.newContext(option)

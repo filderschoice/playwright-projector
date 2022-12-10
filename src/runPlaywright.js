@@ -32,7 +32,7 @@ runPlaywright.exec = async (scenarios = [], options = {}) => {
   await context.close()
   if (plUtil.isNotEmpty(options.video) && plUtil.isNotEmpty(options.video.file)) {
     // video保存
-    await page.video().saveAs(plUtil.pathJoin('videos/', options.video.file + '.webm'))
+    await page.video().saveAs(plUtil.pathJoin('result/videos/', options.video.file + '.webm'))
   }
   await plCore.close(browserServer)
   // output end log
