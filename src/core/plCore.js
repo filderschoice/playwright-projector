@@ -234,6 +234,7 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
   }
   switch (scenario.type) {
     case 'conditions':
+      // condition operate
       let condSelector
       switch (scenario.subType) {
         case 'click':
