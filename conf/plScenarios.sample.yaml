@@ -10,6 +10,44 @@
   type: 'wait'
   time: 1000
 - # Scenario
+  type: 'input'
+  selector: 'input[type=text]'
+  value: 'github playwright'
+- # Scenario
+  type: 'submit'
+  selector: 'input[type=submit]'
+- # Scenario
+  type: 'wait'
+  time: 1000
+- # Scenario
+  type: 'screenshot'
+- # Scenario
+  type: 'conditions'
+  subType: 'click'
+  selector: '#res a'
+  selectorIndex: 0
+- # Scenario
+  type: 'wait'
+  time: 1000
+- # Scenario
+  type: 'screenshot'
+- # Scenario
+  type: 'conditions'
+  subType: 'click'
+  selector: '.Layout-sidebar a.text-bold'
+  selectorIndex: 0
+- # Scenario
+  type: 'pageChange'
+  pageIndex: 0
+  useStack: false
+  args: null
+- # Scenario
+  type: 'wait'
+  time: 1000
+- # Scenario
+  type: 'screenshot'
+  pageIndex: 1
+- # Scenario
   type: 'screenshot'
 - # Scenario
   type: 'dummy'
