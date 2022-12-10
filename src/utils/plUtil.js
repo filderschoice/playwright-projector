@@ -4,6 +4,10 @@ const mkdirp = require('mkdirp')
 const yaml = require('js-yaml')
 const plUtil = {}
 
+plUtil.getObjectType = function (target) {
+  return Object.prototype.toString.call(target).slice(8, -1).toLowerCase()
+}
+
 plUtil.isNotEmpty = function (target) {
   return !plUtil.isEmpty(target)
 }
@@ -46,6 +50,13 @@ plUtil.isEmpty = function (target) {
     }
   }
   return ret
+}
+
+plUtil.isFunction = function (target) {
+  return plUtil.getObjectType(target) == 'function' || plUtil.getObjectType(target) == 'asyncfunction'
+}
+plUtil.isObject = function (target) {
+  return plUtil.getObjectType(target) == 'object'
 }
 
 plUtil.logInfo = function (...params) {

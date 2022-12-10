@@ -31,6 +31,9 @@ PlaywrightCores.defaultViewport = { width: 1366, height: 700 }
 PlaywrightCores.ssFilename = 'playwright-projector'
 PlaywrightCores.ssNumber = 0
 
+// User stack
+PlaywrightCores.user = {}
+
 /**
  * Setting Browser type
  * @param type Browser type(chromium/firefox/webkit)
@@ -171,9 +174,10 @@ PlaywrightCores.setPageParameter = async function (page, param) {
 /**
  * Getting OperatePage
  * @param browser Browser
+ * @param pageIndex Page Index
  * @returns page
  */
-PlaywrightCores.getOperatePage = async function (context) {
+PlaywrightCores.getOperatePage = async function (context, pageIndex = -1) {
   // get pages
   let pages = await context.pages()
   let page = null
@@ -183,12 +187,16 @@ PlaywrightCores.getOperatePage = async function (context) {
   } else {
     // page exist: get firstPage
     let usePageIdx = 0
-    for (let idx = 0; idx < pages.length; idx++) {
-      const page = pages[idx]
-      if (page.url() !== 'about:brank') {
-        // get operation page
-        usePageIdx = idx
-        break
+    if (pageIndex != -1) {
+      usePageIdx = pageIndex
+    } else {
+      for (let idx = 0; idx < pages.length; idx++) {
+        const wkPage = pages[idx]
+        if (wkPage.url() !== 'about:brank') {
+          // get operation page
+          usePageIdx = idx
+          break
+        }
       }
     }
     // set oparatePage
@@ -224,6 +232,7 @@ PlaywrightCores.mkSsFileName = function (baseFileName, number = 0, type = 'jpeg'
 /**
  * Execute Operation Page
  * @param page Page
+ * @param context Context
  * @param scenario Scenario
  * @param options Options
  */
@@ -233,6 +242,41 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
     return
   }
   switch (scenario.type) {
+    case 'pageChange':
+      // page change
+      let context
+      if (scenario.useStack) {
+        context = PlaywrightCores.user['context']
+      } else {
+        context = await page.context()
+      }
+      page = await PlaywrightCores.getOperatePage(context, scenario.pageIndex)
+      await page.bringToFront()
+      break
+    case 'page.operator':
+      // page operate wrapper
+      if (plUtil.isNotEmpty(page[scenario.subType]) && plUtil.isFunction(page[scenario.subType])) {
+        // exec page api
+        let ret
+        let args = undefined
+        if (plUtil.isNotEmpty(scenario.args) && plUtil.isObject(scenario.args)) {
+          // setup args
+          args = scenario.args
+        }
+
+        if (plUtil.getObjectType(page[scenario.subType]).indexOf('async') != -1) {
+          // async
+          ret = await page[scenario.subType](args)
+        } else {
+          // normal
+          ret = page[scenario.subType](args)
+        }
+        // user stack
+        if (scenario.isStack) {
+          PlaywrightCores.user[scenario.subType] = ret
+        }
+      }
+      break
     case 'conditions':
       // condition operate
       let condSelector
@@ -277,15 +321,17 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
         this.getSsNumber(),
         ssOption.type
       )
-      await page.screenshot(ssOption)
+      if (plUtil.isNotEmpty(scenario.pageIndex)) {
+        let wkContext = await page.context()
+        let wkPage = await PlaywrightCores.getOperatePage(wkContext, scenario.pageIndex)
+        wkPage.screenshot(ssOption)
+      } else {
+        await page.screenshot(ssOption)
+      }
       break
     case 'wait':
       // wait
       await new Promise((resolve) => setTimeout(resolve, scenario.time))
-      break
-    case 'waitForURL':
-      // waitForURL
-      await page.waitForURL(scenario.url)
       break
     default:
       // other
