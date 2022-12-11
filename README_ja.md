@@ -2,4 +2,4 @@
 
 ## [English](./README) | [Japanese](./README_ja)
 
-英語
+日本語
