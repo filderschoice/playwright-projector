@@ -1,6 +1,6 @@
 # playwright-projector
 
-## [English](./README) | [Japanese](./README_ja)
+## [English](./README.md) | [Japanese](./README_ja.md)
 
 playwright-projector is a simple way to use [Playwright](https://github.com/microsoft/playwright). When using Playwright, it is possible to use the Page Class operation as a projector by using a configuration and a scenario without being aware of the logic such as Browser/Context.
 
