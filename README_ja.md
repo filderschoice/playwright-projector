@@ -87,7 +87,7 @@ browserType: 'chromium'
 headless: false
 timeout: 30000
 slowMo: 10
-locale: 'jp-JP'
+locale: 'ja-JP'
 # proxy settings
 proxyInfo: []
 auth: null
@@ -105,3 +105,70 @@ video:
 ```
 
 Playwrightをご存じの方なら分かるとおり、コンフィグファイルの内容は[playwright.config](https://playwright.dev/docs/test-configuration)に近い構成となっています。  
+同様のパラメータ値を使用しているため、気になったら確認してください。  
+なお、今後のアップデートでコンフィグファイル内のパラメータは必要に応じて追加していく予定です。
+
+|パラメータ|型|説明|設定値例|
+|-|-|-|-|
+|browserType|String|Playwrightで操作するブラウザ種別|chromium|
+|headless|Boolean|ヘッドレスブラウザでの起動有無|false|
+|timeout|Number|Playwrightで操作するシナリオのタイムアウト値(ms)|30000|
+|slowMo|Number|ブラウザ操作の遅延値(ms)|10|
+|local|String|ブラウザのロケール|ja-JP|
+|proxyInfo|Array|Proxy情報, browserArgsで設定する内容を配列指定|[ '--proxy-server=プロキシのURL:ポート番号' ]|
+|auth|Object|httpCredentialsで設定するauth情報, plAuth.yamlに分離可|{ 'username': 'hogehoge', 'password': 'fugafuga' }|
+|page.timeout|Number|page setDefaultTimeout設定値(ms)|30000|
+|screenshot.dir|String|スクリーンショット画像の保存先ディレクトリパス|./result/ss|
+|screenshot.type|String|スクリーンショット画像の保存ファイル形式|jpeg|
+|screenshot.quality|Number|スクリーンショット画像の保存品質|70|
+|video.file|String|ブラウザ操作ビデオの保存ファイル名, 'result/videos/'直下に保存|'record-video'|
+
+#### シナリオファイル(plScenario.yaml)
+
+```
+#######################
+# Playwright Operation Scenarios
+#######################
+- # Scenario
+  type: 'goto'
+  url: 'https://www.google.com/?hl=ja'
+- # Scenario
+  type: 'screenshot'
+- # Scenario
+  type: 'wait'
+  time: 1000
+- # Scenario
+  type: 'input'
+  selector: 'input[type=text]'
+  value: 'github playwright'
+・・・省略
+```
+
+playwright-projectorのシナリオファイルはyaml形式の配列にて処理操作を定義します。  
+シナリオで使用可能なtypeに応じて、付属する操作パラメータを設定することでPlaywrightの操作を簡易に指定することが可能です。  
+なお、今後のアップデートでシナリオファイル内のパラメータは必要に応じて追加していく予定です。
+
+|Scenario Type|操作パラメータ|説明|
+|-|-|-|
+|goto|arg1: url|page.goto()によるURL遷移処理|
+|input|arg1: selector, arg2: value|page.$$([selector])によるbind, page.keyboard.insertText([value])による入力処理|
+|submit|arg1: selector|page.$$([selector])によるbind, selector.click()による実行処理|
+|screenshot|no arg|表示ページのスクリーンショット処理|
+|wait|arg1: time(ms)|[time]時間のwait処理|
+|conditions|arg1: subType, arg2: selector, arg3: selectorIndex|[selector]が複数存在する場合の特定処理を実施, [subType]はclickのみ対応|
+|pageChange|arg1: pageIndex, arg2: useStack|複数ページ(タブ)がある場合のページ切替処理, Contextの再利用を行う場合は[useStack]を実施(Contextの再利用はcontext保持が必要)|
+|page.operator|arg1: subeType, arg2: args, arg3: isStack|Playwright Pageのラッパー関数, [subType]でPageのAPIを指定し、[args]でAPIにおけるargs情報を指定。取得したデータを[isStack]により保持判定|
+
+
+#### Authファイル(plAuth.yaml)
+
+```
+# Playwright Auth Options
+auth:
+  username: 'test'
+  password: 'test123'
+```
+
+playwright-projectorではProxy環境におけるAuth情報をコンフィグファイルにて指定することが可能ですが、コンフィグファイルとAuth情報を切り離すためのAuthファイルを使用することが可能です  
+パラメータの指定方法はコンフィグファイルと同様です。  
+必要に応じて使用してください。  

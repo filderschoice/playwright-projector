@@ -3,7 +3,7 @@ browserType: 'chromium'
 headless: false
 timeout: 30000
 slowMo: 10
-locale: 'jp-JP'
+locale: 'ja-JP'
 # proxy settings
 proxyInfo: []
 auth: null

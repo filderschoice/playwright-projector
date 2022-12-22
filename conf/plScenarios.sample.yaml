@@ -40,7 +40,6 @@
   type: 'pageChange'
   pageIndex: 0
   useStack: false
-  args: null
 - # Scenario
   type: 'wait'
   time: 1000
