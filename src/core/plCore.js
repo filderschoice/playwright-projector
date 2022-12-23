@@ -125,7 +125,7 @@ PlaywrightCores.newContext = async function (browser, options = {}) {
   // set optionInfo
   const option = {
     ignoreHTTPSErrors: true,
-    locale: options.locale || 'jp-JP'
+    locale: options.locale || 'ja-JP'
   }
   // set auth
   if (plUtil.isNotEmpty(options.auth)) {
