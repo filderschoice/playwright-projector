@@ -111,9 +111,9 @@ It uses similar parameter values, so please check it if you are interested.
 Note that we plan to add parameters in the config file as needed in future updates.
 
 | Parameter          | Type    | Description                                                                         | Example Setting Value                              |
-| ------------------ | ------- | ----------------------------------------------------------------------------------- | -------------------------------------------------- | ----- |
+| ------------------ | ------- | ----------------------------------------------------------------------------------- | -------------------------------------------------- |
 | browserType        | String  | browser type to operate with Playwright                                             | chromium                                           |
-| headless           | Boolean | whether to start in headless browser                                                | false                                              | false |
+| headless           | Boolean | whether to start in headless browser                                                | false                                              |
 | timeout            | Number  | Timeout value of the scenario to operate with Playwright (ms)                       | 30000                                              |
 | slowMo             | Number  | Browser operation delay value (ms)                                                  | 10                                                 |
 | local              | String  | browser locale                                                                      | ja-JP                                              |
