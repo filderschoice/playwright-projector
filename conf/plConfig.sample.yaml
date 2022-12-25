@@ -1,0 +1,20 @@
+# Playwright Options
+browserType: 'chromium'
+headless: false
+timeout: 30000
+slowMo: 10
+locale: 'ja-JP'
+# proxy settings
+proxyInfo: []
+auth: null
+# page option
+page:
+  timeout: 30000
+# save scenario screenshot
+screenshot:
+  dir: './result/ss'
+  type: 'jpeg'
+  quality: 70
+# save scenario video
+video:
+  file: 'record-video'

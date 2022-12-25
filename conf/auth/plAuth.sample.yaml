@@ -1,0 +1,4 @@
+# Playwright Auth Options
+auth:
+  username: 'test'
+  password: 'test123'
