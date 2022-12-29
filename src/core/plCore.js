@@ -22,12 +22,12 @@ PlaywrightCores.browserArgs = [
   // '--mute-audio',
   // '--js-flags=--expose-gc',
   '--lang=ja',
-  '--window-size=1390,840',
+  '--window-size=1366,768',
   '-wait-for-browser'
 ]
 
 // Page Info
-PlaywrightCores.defaultViewport = { width: 1366, height: 700 }
+PlaywrightCores.defaultViewport = { width: 1366, height: 768 }
 PlaywrightCores.ssFilename = 'playwright-projector'
 PlaywrightCores.ssNumber = 0
 
@@ -286,6 +286,19 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
           if (plUtil.isNotEmpty(condSelector) && scenario.selectorIndex <= condSelector.length) {
             // exist selector: click
             await condSelector[scenario.selectorIndex].click()
+          }
+          break
+        case 'download':
+          // Start waiting for download before clicking. Note no await.
+          const dlPromise = page.waitForEvent('download')
+          condSelector = await page.$$(scenario.selector)
+          if (plUtil.isNotEmpty(condSelector) && scenario.selectorIndex <= condSelector.length) {
+            // exist selector: click
+            await condSelector[scenario.selectorIndex].click()
+            // wait download
+            const download = await dlPromise
+            // save downloaded file
+            await download.saveAs(scenario.savePath)
           }
           break
         default:

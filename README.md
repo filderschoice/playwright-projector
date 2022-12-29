@@ -111,9 +111,9 @@ It uses similar parameter values, so please check it if you are interested.
 Note that we plan to add parameters in the config file as needed in future updates.
 
 | Parameter          | Type    | Description                                                                         | Example Setting Value                              |
-| ------------------ | ------- | ----------------------------------------------------------------------------------- | -------------------------------------------------- |
+| ------------------ | ------- | ----------------------------------------------------------------------------------- | -------------------------------------------------- | ----- |
 | browserType        | String  | browser type to operate with Playwright                                             | chromium                                           |
-| headless           | Boolean | whether to start in headless browser                                                | false                                              |
+| headless           | Boolean | whether to start in headless browser                                                | false                                              | false |
 | timeout            | Number  | Timeout value of the scenario to operate with Playwright (ms)                       | 30000                                              |
 | slowMo             | Number  | Browser operation delay value (ms)                                                  | 10                                                 |
 | local              | String  | browser locale                                                                      | ja-JP                                              |
@@ -150,16 +150,16 @@ A scenario file in playwright-projector defines operations in a yaml-style array
 By setting the operation parameters that come with the scenario file according to the types available in the scenario, you can easily specify the operations of Playwright.  
 We plan to add more parameters in the scenario file as needed in future updates.
 
-| Scenario Type | Operation Parameters                               | Description                                                                                                                                                                |
-| ------------- | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| goto          | arg1: url                                          | URL transition processing by page.goto([url])                                                                                                                              |
-| input         | arg1: selector, arg2: value                        | bind by page.$$([selector]), input processing by page.keyboard.insertText([value])                                                                                         |
-| submit        | arg1: selector                                     | bind by page.$$([selector]), execution process by selector.click()                                                                                                         |
-| screenshot    | no arg                                             | screenshot processing of the displayed page                                                                                                                                |
-| wait          | arg1: time(ms)                                     | wait processing for [time] time                                                                                                                                            |
-| conditions    | arg1: subType, arg2: selector, arg3: selectorIndex | perform specific processing when there are multiple [selectors], [subType] is supported only for clicks                                                                    |
-| pageChange    | arg1: pageIndex, arg2: useStack                    | page switching process when there are multiple pages (tabs), [useStack] is executed when Context is reused (Context reuse requires context retention)                      |
-| page.operator | arg1: subeType, arg2: args, arg3: isStack          | Wrapper function for Playwright Page, [subType] specifies the API of Page, and [args] specifies the args information in the API. Retained data is determined by [isStack]. |
+| Scenario Type | Operation Parameters                                                              | Description                                                                                                                                                                |
+| ------------- | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| goto          | arg1: url                                                                         | URL transition processing by page.goto([url])                                                                                                                              |
+| input         | arg1: selector, arg2: value                                                       | bind by page.$$([selector]), input processing by page.keyboard.insertText([value])                                                                                         |
+| submit        | arg1: selector                                                                    | bind by page.$$([selector]), execution process by selector.click()                                                                                                         |
+| screenshot    | no arg                                                                            | screenshot processing of the displayed page                                                                                                                                |
+| wait          | arg1: time(ms)                                                                    | wait processing for [time] time                                                                                                                                            |
+| conditions    | arg1: subType, arg2: selector, arg3: selectorIndex, arg4: savePath(download only) | perform specific processing when there are multiple [selectors], [subType] is supported only for `click`/`download`                                                        |
+| pageChange    | arg1: pageIndex, arg2: useStack                                                   | page switching process when there are multiple pages (tabs), [useStack] is executed when Context is reused (Context reuse requires context retention)                      |
+| page.operator | arg1: subeType, arg2: args, arg3: isStack                                         | Wrapper function for Playwright Page, [subType] specifies the API of Page, and [args] specifies the args information in the API. Retained data is determined by [isStack]. |
 
 #### Auth file (plAuth.yaml)
 

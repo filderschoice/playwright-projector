@@ -150,16 +150,16 @@ playwright-projector のシナリオファイルは yaml 形式の配列にて�
 シナリオで使用可能な type に応じて、付属する操作パラメータを設定することで Playwright の操作を簡易に指定することが可能です。  
 なお、今後のアップデートでシナリオファイル内のパラメータは必要に応じて追加していく予定です。
 
-| Scenario Type | 操作パラメータ                                     | 説明                                                                                                                                             |
-| ------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| goto          | arg1: url                                          | page.goto([url])による URL 遷移処理                                                                                                              |
-| input         | arg1: selector, arg2: value                        | page.$$([selector])による bind, page.keyboard.insertText([value])による入力処理                                                                  |
-| submit        | arg1: selector                                     | page.$$([selector])による bind, selector.click()による実行処理                                                                                   |
-| screenshot    | no arg                                             | 表示ページのスクリーンショット処理                                                                                                               |
-| wait          | arg1: time(ms)                                     | [time]時間の wait 処理                                                                                                                           |
-| conditions    | arg1: subType, arg2: selector, arg3: selectorIndex | [selector]が複数存在する場合の特定処理を実施, [subType]は click のみ対応                                                                         |
-| pageChange    | arg1: pageIndex, arg2: useStack                    | 複数ページ(タブ)がある場合のページ切替処理, Context の再利用を行う場合は[useStack]を実施(Context の再利用は context 保持が必要)                  |
-| page.operator | arg1: subeType, arg2: args, arg3: isStack          | Playwright Page のラッパー関数, [subType]で Page の API を指定し、[args]で API における args 情報を指定。取得したデータを[isStack]により保持判定 |
+| Scenario Type | 操作パラメータ                                                                    | 説明                                                                                                                                             |
+| ------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| goto          | arg1: url                                                                         | page.goto([url])による URL 遷移処理                                                                                                              |
+| input         | arg1: selector, arg2: value                                                       | page.$$([selector])による bind, page.keyboard.insertText([value])による入力処理                                                                  |
+| submit        | arg1: selector                                                                    | page.$$([selector])による bind, selector.click()による実行処理                                                                                   |
+| screenshot    | no arg                                                                            | 表示ページのスクリーンショット処理                                                                                                               |
+| wait          | arg1: time(ms)                                                                    | [time]時間の wait 処理                                                                                                                           |
+| conditions    | arg1: subType, arg2: selector, arg3: selectorIndex, arg4: savePath(download のみ) | [selector]が複数存在する場合の特定処理を実施, [subType]は `click`/`download` のみ対応                                                            |
+| pageChange    | arg1: pageIndex, arg2: useStack                                                   | 複数ページ(タブ)がある場合のページ切替処理, Context の再利用を行う場合は[useStack]を実施(Context の再利用は context 保持が必要)                  |
+| page.operator | arg1: subeType, arg2: args, arg3: isStack                                         | Playwright Page のラッパー関数, [subType]で Page の API を指定し、[args]で API における args 情報を指定。取得したデータを[isStack]により保持判定 |
 
 #### Auth ファイル(plAuth.yaml)
 
