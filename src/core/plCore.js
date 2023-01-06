@@ -31,6 +31,8 @@ PlaywrightCores.defaultViewport = { width: 1366, height: 768 }
 PlaywrightCores.ssFilename = 'playwright-projector'
 PlaywrightCores.ssNumber = 0
 
+// User page
+PlaywrightCores.userPage = undefined
 // User stack
 PlaywrightCores.user = {}
 
@@ -237,6 +239,9 @@ PlaywrightCores.mkSsFileName = function (baseFileName, number = 0, type = 'jpeg'
  * @param options Options
  */
 PlaywrightCores.execOperationPage = async function (page, scenario, options) {
+  // switch oparage page
+  PlaywrightCores.userPage = PlaywrightCores.userPage != undefined ? PlaywrightCores.userPage : page
+  let operatePage = PlaywrightCores.userPage
   if (plUtil.isEmpty(scenario.type)) {
     // Not Operation type
     return
@@ -248,14 +253,14 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
       if (scenario.useStack) {
         context = PlaywrightCores.user['context']
       } else {
-        context = await page.context()
+        context = await operatePage.context()
       }
-      page = await PlaywrightCores.getOperatePage(context, scenario.pageIndex)
-      await page.bringToFront()
+      PlaywrightCores.userPage = await PlaywrightCores.getOperatePage(context, scenario.pageIndex)
+      await operatePage.bringToFront()
       break
     case 'page.operator':
       // page operate wrapper
-      if (plUtil.isNotEmpty(page[scenario.subType]) && plUtil.isFunction(page[scenario.subType])) {
+      if (plUtil.isNotEmpty(operatePage[scenario.subType]) && plUtil.isFunction(operatePage[scenario.subType])) {
         // exec page api
         let ret
         let args = undefined
@@ -264,12 +269,12 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
           args = scenario.args
         }
 
-        if (plUtil.getObjectType(page[scenario.subType]).indexOf('async') != -1) {
+        if (plUtil.getObjectType(operatePage[scenario.subType]).indexOf('async') != -1) {
           // async
-          ret = await page[scenario.subType](args)
+          ret = await operatePage[scenario.subType](args)
         } else {
           // normal
-          ret = page[scenario.subType](args)
+          ret = operatePage[scenario.subType](args)
         }
         // user stack
         if (scenario.isStack) {
@@ -282,7 +287,7 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
       let condSelector
       switch (scenario.subType) {
         case 'click':
-          condSelector = await page.$$(scenario.selector)
+          condSelector = await operatePage.$$(scenario.selector)
           if (plUtil.isNotEmpty(condSelector) && scenario.selectorIndex <= condSelector.length) {
             // exist selector: click
             await condSelector[scenario.selectorIndex].click()
@@ -290,8 +295,8 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
           break
         case 'download':
           // Start waiting for download before clicking. Note no await.
-          const dlPromise = page.waitForEvent('download')
-          condSelector = await page.$$(scenario.selector)
+          const dlPromise = operatePage.waitForEvent('download')
+          condSelector = await operatePage.$$(scenario.selector)
           if (plUtil.isNotEmpty(condSelector) && scenario.selectorIndex <= condSelector.length) {
             // exist selector: click
             await condSelector[scenario.selectorIndex].click()
@@ -307,20 +312,20 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
       break
     case 'goto':
       // page.goto
-      await page.goto(scenario.url)
+      await operatePage.goto(scenario.url)
       break
     case 'input':
       // check selector
-      let inputSelector = await page.$$(scenario.selector)
+      let inputSelector = await operatePage.$$(scenario.selector)
       if (plUtil.isNotEmpty(inputSelector)) {
         // exist selector: type/insertText
         await inputSelector[0].type('')
-        await page.keyboard.insertText(scenario.value)
+        await operatePage.keyboard.insertText(scenario.value)
       }
       break
     case 'submit':
       // check selector
-      let submitSelector = await page.$$(scenario.selector)
+      let submitSelector = await operatePage.$$(scenario.selector)
       if (plUtil.isNotEmpty(submitSelector)) {
         // exist selector: click
         await submitSelector[0].click()
@@ -335,11 +340,11 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
         ssOption.type
       )
       if (plUtil.isNotEmpty(scenario.pageIndex)) {
-        let wkContext = await page.context()
+        let wkContext = await operatePage.context()
         let wkPage = await PlaywrightCores.getOperatePage(wkContext, scenario.pageIndex)
         wkPage.screenshot(ssOption)
       } else {
-        await page.screenshot(ssOption)
+        await operatePage.screenshot(ssOption)
       }
       break
     case 'wait':

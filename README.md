@@ -159,7 +159,7 @@ We plan to add more parameters in the scenario file as needed in future updates.
 | wait          | arg1: time(ms)                                                                    | wait processing for [time] time                                                                                                                                            |
 | conditions    | arg1: subType, arg2: selector, arg3: selectorIndex, arg4: savePath(download only) | perform specific processing when there are multiple [selectors], [subType] is supported only for `click`/`download`                                                        |
 | pageChange    | arg1: pageIndex, arg2: useStack                                                   | page switching process when there are multiple pages (tabs), [useStack] is executed when Context is reused (Context reuse requires context retention)                      |
-| page.operator | arg1: subeType, arg2: args, arg3: isStack                                         | Wrapper function for Playwright Page, [subType] specifies the API of Page, and [args] specifies the args information in the API. Retained data is determined by [isStack]. |
+| page.operator | arg1: subType, arg2: args, arg3: isStack                                          | Wrapper function for Playwright Page, [subType] specifies the API of Page, and [args] specifies the args information in the API. Retained data is determined by [isStack]. |
 
 #### Auth file (plAuth.yaml)
 
