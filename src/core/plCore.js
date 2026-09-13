@@ -256,7 +256,8 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
         context = await operatePage.context()
       }
       PlaywrightCores.userPage = await PlaywrightCores.getOperatePage(context, scenario.pageIndex)
-      await operatePage.bringToFront()
+      // bring the switched page to front
+      await PlaywrightCores.userPage.bringToFront()
       break
     case 'page.operator':
       // page operate wrapper
