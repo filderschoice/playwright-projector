@@ -9,6 +9,8 @@ Playwright を使用する場合における Browser/Context 等のロジック�
 
 ## インストール方法
 
+Node.js 24 以上が必要です（`.nvmrc` に対象のメジャーバージョンを記載しています）。
+
 playwright-projector を Clone して、依存パッケージのインストールを行います。
 
 ```console

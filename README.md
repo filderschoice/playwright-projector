@@ -11,6 +11,8 @@ because it's a simple way to try out Playwright.
 
 ## Installation
 
+Node.js 24 or later is required (the target major version is written in `.nvmrc`).
+
 Clone playright-projector to install dependent packages.
 
 ```console

@@ -16,9 +16,11 @@
 
 - 対象: YAML のコンフィグとシナリオで Playwright の Page 操作を宣言的に逐次実行する Node.js 製 CLI。
   利用者は Browser / Context を意識しない。
-- 前提環境: Node.js 18 以上（playwright 1.55.1 の要件。リポジトリとしての要件は未定義）、CommonJS。
-  依存は playwright ^1.55.1・js-yaml ^4.3.2・commander ^9・app-root-path ^3・mkdirp ^1（mkdirp は未使用関数のみが参照）。
-- ブラウザ本体は `npx playwright install` で別途導入する（playwright 1.55.1 は install script を持たない）。
+- 前提環境: Node.js 24 以上（Active LTS。`package.json` の `engines` を `>=24`、`.nvmrc` を `24` で宣言）、CommonJS。
+  依存は playwright ^1.63.0（Node.js 20 以上が必要）・js-yaml ^4.3.2・commander ^9・app-root-path ^3・mkdirp ^1
+  （mkdirp は未使用関数のみが参照）。他依存のメジャー更新は未実施で判断待ち（BL-027）。
+- ブラウザ本体は `npx playwright install` で別途導入する（playwright 1.63.0 は install script を持たず、
+  必要なブラウザのリビジョンも版ごとに異なるため、依存更新のたびに再導入が必要）。
 
 ## 実装済み機能要件
 
@@ -32,7 +34,8 @@
   - 構文エラーの表示は `plUtil.formatParseError` による理由と行・列のみ。js-yaml の `message` はファイル内容の抜粋を
     含み、Auth ファイルでは資格情報が出力されるため使わない。
 - FR-04 ブラウザ起動: `browserType`（chromium / firefox / webkit、未知値は chromium）で `launchServer` し、
-  `wsEndpoint` へ `connect` する。`timeout` はブラウザ起動待ち、`slowMo`・`headless` はそのまま渡す。
+  `wsEndpoint` へ `connect(wsEndpoint, { slowMo })` する。`launchServer` には `headless`・`timeout`（ブラウザ起動待ち）・
+  起動引数を渡す。`slowMo`（既定10ms）は `launchServer` のオプションに存在しないため `connect` 側で指定する。
 - FR-05 起動引数: 固定の `browserArgs`（`--lang=ja`・`--window-size=1366,768`・`-wait-for-browser`）の複製に、
   `proxyInfo` が空（null / undefined / []）なら `--no-proxy-server`、そうでなければ `proxyInfo` の各要素を追加する。
   ブラウザ種別による引数の出し分けはしない（firefox / webkit での可否は未確認、BL-015）。
@@ -42,7 +45,9 @@
   各シナリオの後に1秒待つ。`type` が空のシナリオと未知の `type` は何もしない（黙って無視）。
 - FR-08 シナリオ種別（`plCore.execOperationPage`。操作対象は `PlaywrightCores.userPage`、初回は初期ページ）:
   - `goto`: `page.goto(url)`。
-  - `input`: `$$(selector)` の先頭要素へ `type('')` でフォーカスし、`keyboard.insertText(value)`。要素が無ければ何もしない。
+  - `input`: `$$(selector)` の先頭要素へ `focus()` でフォーカスし、`keyboard.insertText(value)`。要素が無ければ何もしない。
+    非推奨の `ElementHandle.type` は使わない。`page.$$`（ElementHandle）は非推奨ではなく「推奨されない」扱いで、
+    Locator への移行は待機・厳格モードの挙動が変わるため行っていない。
   - `submit`: `$$(selector)` の先頭要素を click。要素が無ければ何もしない。
   - `wait`: `time` ミリ秒待つ。
   - `screenshot`: `options`（シナリオ）があればそれを、無ければコンフィグの `screenshot` を**複製**して `path` を付与し保存。

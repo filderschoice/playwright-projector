@@ -5,19 +5,33 @@
 <!-- COPILOT_RECORDS:BEGIN -->
 <!-- markdownlint-disable-next-line MD041 -->
 ```yaml
+- id: BL-027
+  区分: 品質ゲート
+  タスク内容: >-
+    Node.js 24 前提で他の依存のメジャー更新（commander 9→15、js-yaml 4→5、eslint 8→9、prettier 2→3、
+    eslint-config-prettier 8→10）を行うか判断する
+  優先度: P3
+  状態: ブロック
+  担当: ユーザー
+  完了条件: 更新する依存と時期をユーザーが決定し、更新する場合は個別の実装タスクが起票されている
+  依存: []
+  根拠: >-
+    いずれも Node.js 24 上で現行版のまま動作し、品質ゲートも成功するため必須ではない。eslint 9 は flat config への移行と
+    CLAUDE.md の品質ゲート定義（ESLint 8 前提の注記）の変更を伴い、commander・js-yaml はCLI引数解釈とYAML読込の
+    互換性確認が必要な破壊的変更を含むため、今回の依頼範囲（Node.js 24 と playwright 最新化）の外として人の判断に委ねる
 - id: BL-019
   区分: 人手検証
   タスク内容: >-
-    playwright 更新（BL-018）と不具合修正（BL-003〜BL-010）の後、npx playwright install でブラウザを導入し、
+    Node.js 24 と playwright 1.63.0 への更新（BL-023〜BL-026）の後、npx playwright install でブラウザを導入し、
     npm start でサンプルシナリオが完走すること、result/ss と result/videos に成果物が出ることを確認する
   優先度: P2
   状態: 未着手
   担当: ユーザー
   完了条件: >-
     chromium でサンプルシナリオが例外なく完走し、スクリーンショット連番と動画ファイルが保存される。
+    slowMo を大きな値（例 500）にすると操作が遅くなる。input シナリオで検索欄へ文字が入力される。
     シナリオファイルの構文誤りを与えたとき終了コード1で停止する
-  依存:
-    - BL-018
+  依存: []
   根拠: 実ブラウザ起動と外部サイトへのアクセスを伴うため、CLAUDE.md の定義により自律ループ内で実行しない
 - id: BL-016
   区分: 人手検証

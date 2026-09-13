@@ -80,16 +80,14 @@ PlaywrightCores.getArgs = function (proxyInfo = []) {
  * @param headless Headless Flag
  * @param timeout Browser Timeout
  * @param args Browser args
- * @param slowMo SlowMo
  * @returns browserServer
  */
-PlaywrightCores.launchServer = async function (headless = false, timeout = 60000, args = [], slowMo = 10) {
-  // launch browserServer
+PlaywrightCores.launchServer = async function (headless = false, timeout = 60000, args = []) {
+  // launch browserServer (slowMo is not a launchServer option: set it on connect)
   let browserServer = await PlaywrightCores.browserType.launchServer({
     headless,
     timeout,
-    args,
-    slowMo
+    args
   })
   return browserServer
 }
@@ -108,12 +106,13 @@ PlaywrightCores.getEndpoint = async function (browserServer) {
 /**
  * Connecting Browser
  * @param wsEndpoint Endpoint
+ * @param slowMo SlowMo
  * @returns browser
  */
-PlaywrightCores.connectBrowser = async function (wsEndpoint) {
+PlaywrightCores.connectBrowser = async function (wsEndpoint, slowMo = 10) {
   // connect Browser
-  let browser = await PlaywrightCores.browserType.connect({
-    wsEndpoint
+  let browser = await PlaywrightCores.browserType.connect(wsEndpoint, {
+    slowMo
   })
   return browser
 }
@@ -312,8 +311,8 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
       // check selector
       let inputSelector = await operatePage.$$(scenario.selector)
       if (plUtil.isNotEmpty(inputSelector)) {
-        // exist selector: type/insertText
-        await inputSelector[0].type('')
+        // exist selector: focus/insertText (ElementHandle.type is deprecated)
+        await inputSelector[0].focus()
         await operatePage.keyboard.insertText(scenario.value)
       }
       break

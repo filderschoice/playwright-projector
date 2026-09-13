@@ -5,6 +5,117 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-09-14 00:30
+  summary: input シナリオで非推奨の ElementHandle.type をやめ、ElementHandle.focus でフォーカスする
+  details:
+    変更内容: >-
+      plCore.execOperationPage の input で、先頭要素へのフォーカス目的に呼んでいた inputSelector[0].type('') を
+      inputSelector[0].focus() へ置き換えた。playwright 1.63.0 の型定義で ElementHandle.type は @deprecated で、
+      空文字の type は要素へフォーカスするだけでキー入力を行わないため、フォーカス後に keyboard.insertText する挙動は維持される。
+      page.$$ は非推奨ではないため維持し、Locator への移行は待機・厳格モードの挙動が変わるため行わない（DESIGN.md へ明記）。
+      人手検証 BL-019 の完了条件へ input の入力確認を追加した
+    変更ファイル:
+      - src/core/plCore.js
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/DESIGN.md
+      - docs/records/managed/EXECUTE.md
+    検証コマンド: >-
+      node mock-test.js（scratchpad。修正前は BL-026 の1件失敗、修正後は全6件成功） / src 配下の .type( 呼び出しの grep /
+      npx --no-install eslint index.js src / npx --no-install prettier --check index.js src /
+      npx markdownlint-cli2（品質ゲート定義のとおり） / 記録ファイルYAMLの safe_load / npm audit --omit=dev
+    検証結果: >-
+      成功 - input で type が呼ばれず、focus の後に insertText が呼ばれることを確認。src 配下に .type( の呼び出しは無い。
+      ESLint・Prettier・Markdown（0 issues）・記録YAMLは成功、npm audit --omit=dev は0件。実ブラウザでの入力確認は BL-019 に含める
+    関連ID:
+      - BL-026
+- date: 2026-09-14 00:20
+  summary: コンフィグの slowMo が launchServer へ渡され無視されていた不具合を修正し、connect のオプションとして渡す
+  details:
+    変更内容: >-
+      plCore.launchServer の引数と launchServer オプションから slowMo を外し、plCore.connectBrowser に slowMo 引数（既定10）を追加して
+      BrowserType.connect(wsEndpoint, { slowMo }) で渡すようにした。runPlaywright.exec は options.slowMo を connectBrowser へ渡す。
+      playwright の型定義で slowMo は launchServer のオプションに無く ConnectOptions にあるため、従来（1.55.1 でも）は
+      README の「ブラウザ操作の遅延値」が効いていなかった。修正により既定値10ms（サンプルも10）の遅延が操作ごとに入る。
+      connect の呼び出しは型定義の connect(wsEndpoint, options) 形式へ変えた
+    変更ファイル:
+      - src/core/plCore.js
+      - src/runPlaywright.js
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/DESIGN.md
+      - docs/records/managed/EXECUTE.md
+    検証コマンド: >-
+      node mock-test.js（scratchpad。BrowserType をモックへ差し替え runPlaywright.exec を実行。修正前は BL-025 の3件失敗、
+      修正後は BL-025 の4件成功） / npx --no-install eslint index.js src / npx --no-install prettier --check index.js src /
+      npx markdownlint-cli2（品質ゲート定義のとおり） / 記録ファイルYAMLの safe_load / npm audit --omit=dev
+    検証結果: >-
+      成功 - launchServer に slowMo が渡らず headless・timeout は渡ること、connect に wsEndpoint と slowMo（指定値・未指定時10）が
+      渡ることを確認。ESLint・Prettier・Markdown（0 issues）・記録YAMLは成功、npm audit --omit=dev は0件。
+      実ブラウザで遅延が効くことの確認は BL-019 の人手検証に含める
+    関連ID:
+      - BL-025
+- date: 2026-09-14 00:10
+  summary: playwright を 1.55.1 から最新の 1.63.0 へ更新し、使用APIの存在と非推奨指定を型定義で確認
+  details:
+    変更内容: >-
+      npm install playwright@^1.63.0 で依存を更新した（package.json の指定は ^1.63.0、playwright-core も 1.63.0）。
+      lock からは playwright 1.55.1 が optionalDependencies に持っていた fsevents 2.3.2（macOS 専用）が消えたが、
+      1.63.0 の package.json が fsevents を依存に持たなくなったことによる上流由来の変化で、本リポジトリの直接依存の削除ではない。
+      playwright-core の types.d.ts から、使用する BrowserType・BrowserServer・Browser・BrowserContext・Page・ElementHandle・
+      Keyboard・Download・Video のメソッドがすべて存在し、コンテキストオプション（ignoreHTTPSErrors・locale・
+      httpCredentials・recordVideo.dir）とスクリーンショットオプション（path・type・quality）も存在することを確認した。
+      非推奨は ElementHandle.type のみ（BL-026）で、slowMo は launchServer のオプションに無く ConnectOptions にあること（BL-025）を確認した。
+      ブラウザのリビジョンが変わる（chromium 1243 等）ため利用者は npx playwright install の再実行が必要で、実ブラウザでの確認は
+      BL-019 の人手検証とした。DESIGN.md と共通規約の playwright バージョン記載を更新した
+    変更ファイル:
+      - package.json
+      - package-lock.json
+      - .github/copilot-instructions.md
+      - CHANGELOG.md
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/DESIGN.md
+      - docs/records/managed/EXECUTE.md
+    検証コマンド: >-
+      npm ls playwright playwright-core / lock 差分のパッケージ増減確認 /
+      node --throw-deprecation check-api.js（型定義の使用API・非推奨・slowMo 確認と BrowserType 実体の確認） /
+      node --throw-deprecation -r stub-run-real-core.js index.js（サンプル3ファイル指定） /
+      npx --no-install eslint index.js src / npx --no-install prettier --check index.js src /
+      npx markdownlint-cli2（品質ゲート定義のとおり） / 記録ファイルYAMLの safe_load / npm audit --omit=dev
+    検証結果: >-
+      成功 - 使用API 24件が存在（非推奨1件）、chromium・firefox・webkit の launchServer/connect を確認、スタブ実行は終了コード0。
+      ESLint・Prettier・Markdown（0 issues）・記録YAMLは成功、npm audit --omit=dev は0件
+    関連ID:
+      - BL-024
+- date: 2026-09-14 00:00
+  summary: Node.js 24 を前提環境として engines と .nvmrc で宣言し、Node.js 24 上で非推奨警告が出ないことを確認
+  details:
+    変更内容: >-
+      package.json（と package-lock.json のルート）へ engines.node を >=24 で追加し、.nvmrc（24）を新規作成した。
+      README_ja.md・README.md のインストール手順へ Node.js 24 以上の要件を追記し、共通規約のセットアップ記載と
+      DESIGN.md の前提環境を Node.js 24 へ更新した。engines は engine-strict 未設定では警告のみで npm ci を妨げない。
+      Node.js 24.18.0 で node --throw-deprecation により依存5件の読込と、plCore（playwright 読込を含む）を実際に読み込み
+      runPlaywright.exec のみ差し替えた index.js のサンプル実行が成功し、src/ に Node.js 23 以降で削除・非推奨となった
+      API（util.is 系、new Buffer、url.parse、recursive 付き rmdirSync 等）の使用が無いことを確認した。コードの変更は無い
+    変更ファイル:
+      - package.json
+      - package-lock.json
+      - .nvmrc
+      - README_ja.md
+      - README.md
+      - .github/copilot-instructions.md
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/DESIGN.md
+      - docs/records/managed/EXECUTE.md
+    検証コマンド: >-
+      npm install --package-lock-only --ignore-scripts /
+      node --throw-deprecation -r stub-run-real-core.js index.js（サンプル3ファイル指定） /
+      node --throw-deprecation -e（依存5件の require） / src の削除済みAPIの grep /
+      npx --no-install eslint index.js src / npx --no-install prettier --check index.js src /
+      npx markdownlint-cli2（品質ゲート定義のとおり） / 記録ファイルYAMLの safe_load / npm audit --omit=dev
+    検証結果: >-
+      成功 - スタブ実行は終了コード0で16シナリオが渡り、非推奨警告による例外は発生しなかった。依存読込も成功。
+      ESLint・Prettier・Markdown（0 issues）・記録YAMLは成功、npm audit --omit=dev は0件
+    関連ID:
+      - BL-023
 - date: 2026-09-13 23:50
   summary: 開発依存の間接依存6件を npm audit fix で同一メジャー内へ更新し、npm audit（dev含む）を0件にした
   details:

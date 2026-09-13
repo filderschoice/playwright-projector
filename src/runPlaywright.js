@@ -23,12 +23,12 @@ runPlaywright.exec = async (scenarios = [], options = {}) => {
   const browserArgs = plCore.getArgs(options.proxyInfo)
   // Setup Playwright
   plCore.setBrowserType(options.browserType)
-  const browserServer = await plCore.launchServer(options.headless, options.timeout, browserArgs, options.slowMo)
+  const browserServer = await plCore.launchServer(options.headless, options.timeout, browserArgs)
   let context
   let page
   try {
     const wsEndpoint = await plCore.getEndpoint(browserServer)
-    const browser = await plCore.connectBrowser(wsEndpoint)
+    const browser = await plCore.connectBrowser(wsEndpoint, options.slowMo)
     context = await plCore.newContext(browser, options)
     page = await plCore.getOperatePage(context)
     if (plUtil.isNotEmpty(options.page)) {
