@@ -5,6 +5,26 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-09-13 23:50
+  summary: 開発依存の間接依存6件を npm audit fix で同一メジャー内へ更新し、npm audit（dev含む）を0件にした
+  details:
+    変更内容: >-
+      npm audit fix（--force なし）で ESLint 8 系の間接依存を更新した（ajv 6.12.6→6.15.0、brace-expansion 1.1.11→1.1.18、
+      cross-spawn 7.0.3→7.0.6、flatted 3.2.7→3.4.4、minimatch 3.1.2→3.1.5、word-wrap 1.2.3→1.2.5）。事前に --dry-run で
+      変更がすべて同一メジャー内の更新で、削除・ダウングレードが無いことを確認した。package.json は変更していない
+    変更ファイル:
+      - package-lock.json
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+    検証コマンド: >-
+      npm audit fix --dry-run / npm audit / npm audit --omit=dev / 未定義変数を含む一時ファイルで no-undef の検出確認（確認後に削除） /
+      npx --no-install eslint index.js src / npx --no-install prettier --check index.js src /
+      npx markdownlint-cli2（品質ゲート定義のとおり） / 記録ファイルYAMLの safe_load
+    検証結果: >-
+      成功 - npm audit（dev含む）と --omit=dev はいずれも0件。ESLint は既存コードで成功し、未定義変数を従来どおり検出した。
+      Prettier・Markdown（0 issues）・記録YAMLは成功
+    関連ID:
+      - BL-021
 - date: 2026-09-13 23:44
   summary: page.operator の戻り値を関数の型名によらず常に await するよう変更
   details:

@@ -5,21 +5,6 @@
 <!-- COPILOT_RECORDS:BEGIN -->
 <!-- markdownlint-disable-next-line MD041 -->
 ```yaml
-- id: BL-021
-  区分: 品質ゲート
-  タスク内容: >-
-    開発依存（ESLint 8 系の間接依存）の npm audit 指摘 6件（high 4件 ajv・brace-expansion・cross-spawn・minimatch 等、
-    moderate 2件）を、依存の削除・ダウングレードを伴わない範囲の更新で解消する
-  優先度: P3
-  状態: 未着手
-  担当: AIエージェント
-  完了条件: >-
-    npm audit（dev含む）の high 以上が0件、または残存分に更新不可の理由が記録されており、
-    品質ゲートの ESLint・Prettier が従来と同じ判定で成功する
-  依存: []
-  根拠: >-
-    2026-09-13の BL-018 対応中に npm audit（dev含む）で検出。品質ゲートの対象は --omit=dev で、開発端末でのみ
-    実行するツールの依存のため優先度はP3とした。ESLint 9 への移行は設定形式が変わるため本タスクの範囲外とする
 - id: BL-019
   区分: 人手検証
   タスク内容: >-
