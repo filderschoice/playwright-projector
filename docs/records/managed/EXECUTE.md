@@ -5,6 +5,31 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-09-14 00:20
+  summary: コンフィグの slowMo が launchServer へ渡され無視されていた不具合を修正し、connect のオプションとして渡す
+  details:
+    変更内容: >-
+      plCore.launchServer の引数と launchServer オプションから slowMo を外し、plCore.connectBrowser に slowMo 引数（既定10）を追加して
+      BrowserType.connect(wsEndpoint, { slowMo }) で渡すようにした。runPlaywright.exec は options.slowMo を connectBrowser へ渡す。
+      playwright の型定義で slowMo は launchServer のオプションに無く ConnectOptions にあるため、従来（1.55.1 でも）は
+      README の「ブラウザ操作の遅延値」が効いていなかった。修正により既定値10ms（サンプルも10）の遅延が操作ごとに入る。
+      connect の呼び出しは型定義の connect(wsEndpoint, options) 形式へ変えた
+    変更ファイル:
+      - src/core/plCore.js
+      - src/runPlaywright.js
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/DESIGN.md
+      - docs/records/managed/EXECUTE.md
+    検証コマンド: >-
+      node mock-test.js（scratchpad。BrowserType をモックへ差し替え runPlaywright.exec を実行。修正前は BL-025 の3件失敗、
+      修正後は BL-025 の4件成功） / npx --no-install eslint index.js src / npx --no-install prettier --check index.js src /
+      npx markdownlint-cli2（品質ゲート定義のとおり） / 記録ファイルYAMLの safe_load / npm audit --omit=dev
+    検証結果: >-
+      成功 - launchServer に slowMo が渡らず headless・timeout は渡ること、connect に wsEndpoint と slowMo（指定値・未指定時10）が
+      渡ることを確認。ESLint・Prettier・Markdown（0 issues）・記録YAMLは成功、npm audit --omit=dev は0件。
+      実ブラウザで遅延が効くことの確認は BL-019 の人手検証に含める
+    関連ID:
+      - BL-025
 - date: 2026-09-14 00:10
   summary: playwright を 1.55.1 から最新の 1.63.0 へ更新し、使用APIの存在と非推奨指定を型定義で確認
   details:

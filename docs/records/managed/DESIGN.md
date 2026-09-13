@@ -34,7 +34,8 @@
   - 構文エラーの表示は `plUtil.formatParseError` による理由と行・列のみ。js-yaml の `message` はファイル内容の抜粋を
     含み、Auth ファイルでは資格情報が出力されるため使わない。
 - FR-04 ブラウザ起動: `browserType`（chromium / firefox / webkit、未知値は chromium）で `launchServer` し、
-  `wsEndpoint` へ `connect` する。`timeout` はブラウザ起動待ち、`slowMo`・`headless` はそのまま渡す。
+  `wsEndpoint` へ `connect(wsEndpoint, { slowMo })` する。`launchServer` には `headless`・`timeout`（ブラウザ起動待ち）・
+  起動引数を渡す。`slowMo`（既定10ms）は `launchServer` のオプションに存在しないため `connect` 側で指定する。
 - FR-05 起動引数: 固定の `browserArgs`（`--lang=ja`・`--window-size=1366,768`・`-wait-for-browser`）の複製に、
   `proxyInfo` が空（null / undefined / []）なら `--no-proxy-server`、そうでなければ `proxyInfo` の各要素を追加する。
   ブラウザ種別による引数の出し分けはしない（firefox / webkit での可否は未確認、BL-015）。
