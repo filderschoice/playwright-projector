@@ -96,11 +96,21 @@ AIエージェントが人の応答を待たずに複数イテレーションを
 | 自律ループ実行モードの実行手順 | `.claude/skills/autonomous-loop/SKILL.md` | 明示指示時にしか使わないため、常時読み込みから外している。Claude Code 固有で Copilot は対象外 |
 | PR説明文・コードレビューの言語と構成 | `.github/instructions/pr.instructions.md` | Copilot Chat へはパス限定で自動適用され、Claude Code は生成時に同ファイルを読む |
 
+## 単体テストのローカル実行
+
+本リポジトリには GitHub Actions のワークフローが無く、CIでの自動チェックはありません（導入可否は BACKLOG で判断待ち）。
+プルリクエスト作成前に、`CLAUDE.md`「本リポジトリの品質ゲート定義」のコマンド（`npm test` と Markdownlint を含む）を
+ローカル実行して指摘を解消してください。
+
+- `npm ci` の後に `npm test` を実行します。Node.js 24 標準の `node:test` を使うため追加の依存は無く、
+  ブラウザの導入（`npx playwright install`）・外部通信・`conf/` の実ファイルは不要です。
+- テストは `test/` 配下に `*.test.js` として置きます（`src/` と同じ構成で対応させます）。
+- 挙動を変える変更、シナリオ種別・設定キーの追加・変更では、同じプルリクエストでテストを追加・更新します。
+  種別やキーを README・サンプルへ反映し忘れると `test/docs.test.js` が失敗します。
+
 ## Markdownlintのローカル実行
 
-本リポジトリには GitHub Actions のワークフローが無く、CIでの自動チェックはありません。
-プルリクエスト作成前に、`CLAUDE.md`「本リポジトリの品質ゲート定義」のコマンド（Markdownlint を含む）を
-ローカル実行して指摘を解消してください。
+品質ゲートの Markdownlint をローカル実行する際の補足です（CI が無い点は前節を参照）。
 
 - 設定 `.markdownlint-cli2.yaml` はカレントディレクトリから自動読み込みされます。
 - Node.js / npx が利用できる環境が前提です。

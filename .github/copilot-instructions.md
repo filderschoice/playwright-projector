@@ -46,12 +46,14 @@ playwright-projector は、Browser / Context を意識せず Page 操作をYAML�
 | `src/core/plCore.js` | Playwright 操作の本体。シナリオ種別は `execOperationPage` の `switch` で分岐する |
 | `src/utils/plUtil.js` | ログ出力・ファイル入出力・空判定などの汎用関数 |
 | `conf/*.sample.yaml` | コンフィグ・シナリオ・Authのサンプル（実ファイルはコピーして作成し、Git管理外） |
+| `test/` | 単体テスト（`node:test`）。`helpers/` に共通ヘルパーと Playwright のモック、`docs.test.js` に README・サンプルとの整合テスト |
 
 ### コマンド
 
 - セットアップ: Node.js 24 以上（`package.json` の `engines` と `.nvmrc` で宣言）で `npm ci` の後に
   `npx playwright install`（playwright 1.63 系はブラウザを自動導入せず、版ごとに対応ブラウザが異なる）
 - 実行: `npm start`（`node index.js`。既定で `conf/plConfig.yaml`・`conf/plScenarios.yaml`・`conf/auth/plAuth.yaml` を読む）
+- 単体テスト: `npm test`（ブラウザを起動せず外部通信もしない）
 - 品質ゲートのコマンドは `CLAUDE.md`「本リポジトリの品質ゲート定義」が正本
 
 ### 変更時の制約
@@ -71,7 +73,12 @@ playwright-projector は、Browser / Context を意識せず Page 操作をYAML�
   `conf/custom/*yaml`）を読み取り・再掲・コミットしない。サンプルにはダミー値のみを置く。
 - **外部通信と成果物**: `npm start` は実ブラウザを起動し、シナリオに書かれた外部サイトへアクセスする
   （サンプルは Google / GitHub）。出力先の `result/ss/`・`result/videos/` は Git 管理外。
-- **自動テストは存在しない**。挙動を変える変更では、確認手順（使用したシナリオと期待結果）を提示する。
+- **単体テストを同時に更新する**。挙動を変える変更・シナリオ種別や設定キーの追加・変更では、`test/` 配下の
+  該当テストを追加・更新し、`npm test` の成功を確認する。テストはブラウザを起動しない（Playwright のオブジェクトは
+  `test/helpers/mocks.js` のモックで代替し、`index.js` は一時ディレクトリのダミー設定で子プロセス実行する）。
+  テストで `conf/` の実ファイルを読まず、テストデータにはダミー値のみを使う。モジュールスコープの状態を持つ `src/` は
+  `test/helpers/setup.js` の `freshRequire` で読み直す。実ブラウザでの確認が必要な挙動は、確認手順
+  （使用したシナリオと期待結果）もあわせて提示する。
 
 ## セキュリティ要件（MUST）
 
