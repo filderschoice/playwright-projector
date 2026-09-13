@@ -5,6 +5,30 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-09-14 00:38
+  summary: index.js（CLI）の単体テスト15件を子プロセス実行で追加し、引数・マージ・読込失敗・実行時例外を網羅した
+  details:
+    変更内容: >-
+      test/helpers/stub-run.js（node -r で読み込み、runPlaywright を受け取った値を出力するだけのスタブへ差し替える preload）と
+      test/index.test.js を追加した。子プロセスは一時ディレクトリを作業ディレクトリとし、ダミー値の YAML だけを配置するため、
+      リポジトリの conf 配下の実ファイルは読まない。既定パスと読込先ログ、-c/-s/-a と長いオプション、--version、
+      Auth 優先の浅いマージ、コンフィグ無しの [WARN] 継続、Auth 無し・空の無出力継続、読込失敗7ケースの [ERROR] と終了コード1
+      （exec が呼ばれないこと）、Auth 構文誤りで資格情報を出力しないこと、exec 例外時のエラーとスタック出力と終了コード1を検証する
+    変更ファイル:
+      - test/helpers/stub-run.js
+      - test/index.test.js
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+    検証コマンド: >-
+      npm test / 変異テスト（index.js へマージ順の逆転・エラー表示への例外メッセージ出力・読込失敗の終了コード0・既定パスの変更を
+      一時的に注入して npm test、各回後に git checkout で復元） /
+      npx --no-install eslint index.js src test / npx --no-install prettier --check index.js src test /
+      npx markdownlint-cli2（品質ゲート定義のとおり） / 記録ファイルYAMLの safe_load / npm audit --omit=dev
+    検証結果: >-
+      成功 - npm test は93件成功（約3.5秒）。変異4種は1〜8件のテストが失敗して検出でき、復元後の index.js に差分は無い。
+      ESLint・Prettier・Markdown（0 issues）・記録YAMLは成功、npm audit --omit=dev は0件
+    関連ID:
+      - BL-031
 - date: 2026-09-14 00:36
   summary: runPlaywright の単体テスト8件を追加し、起動から終了までの流れと例外時の後始末を網羅した
   details:
