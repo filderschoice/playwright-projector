@@ -35,28 +35,6 @@
     ADOPTION.md が配布元リポジトリと配布先（本リポジトリ）を取り違えずに記述され、導入資産一覧に上記2ファイルが載っている。
     配布元由来の汎用記述（手順・チェックリスト）の意味は変えない。markdownlint が 0 issues
   依存: []
-- id: BL-036
-  区分: 品質ゲート
-  タスク内容: >-
-    開発者向け・エージェント向け文書の実装との乖離と不整合を直す。
-    (1) .github/copilot-instructions.md「変更時の制約」の「ブラウザ引数（getArgs が配列へ追記する）をモジュール変数で持つ」が、
-    getArgs は複製へ追記しモジュール変数を変更しない現行実装（src/core/plCore.js の getArgs）と異なる。
-    (2) CONTRIBUTING.md「変更手順」2が「ルールファイルを追加または更新」のみで、アプリ本体の変更時のテスト・README 同時更新が無い。
-    (3) CONTRIBUTING.md 101行目「導入可否は BACKLOG で判断待ち」が時点情報。
-    (4) CONTRIBUTING.md「ドキュメント構成」表に README.md / README_ja.md、.claude/skills/、templates/ が無い。
-    (5) CONTRIBUTING.md 29行目はPR説明へ目的・影響範囲・ロールバック方針を求めるが、正本の
-    .github/instructions/pr.instructions.md の構成に影響範囲・ロールバック方針の欄が無く、
-    .github/PULL_REQUEST_TEMPLATE.md は英語のコメント2行のみで構成を示していない
-  優先度: P2
-  状態: 未着手
-  担当: AIエージェント
-  完了条件: >-
-    (1)〜(5) が解消し、PR説明の構成が pr.instructions.md を正本として CONTRIBUTING.md・PRテンプレートと矛盾しない。
-    規範（禁止事項・承認要件）の追加・削除は行わない。markdownlint が 0 issues、npm test が成功
-  依存: []
-  根拠: >-
-    (5) は CONTRIBUTING.md に既に定められたPR記載要件を正本の構成へ反映するもので、新しい規範の追加ではない。
-    PRテンプレートは見出しのみを置き、各見出しの説明は正本（pr.instructions.md）への参照とすることで二重管理を避ける
 - id: BL-034
   区分: 品質ゲート
   タスク内容: >-

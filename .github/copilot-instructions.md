@@ -63,8 +63,8 @@ playwright-projector は、Browser / Context を意識せず Page 操作をYAML�
 - **コードスタイル**: `.prettierrc.js`（セミコロンなし・シングルクォート・120桁・末尾カンマなし）と
   `.eslintrc.js`（ESLint 8 形式）に従う。
 - **状態はモジュールスコープ**: `plCore.js` は操作中ページ・`isStack` の保持値・スクリーンショット連番・
-  ブラウザ引数（`getArgs` が配列へ追記する）をモジュール変数で持つ。1プロセス1実行を前提とし、再実行や並列化を
-  導入する場合はこれらの初期化を設計に含める。
+  ブラウザ種別をモジュール変数で持つ。1プロセス1実行を前提とし、再実行や並列化を導入する場合はこれらの初期化を
+  設計に含める。既定の起動引数 `browserArgs` もモジュール変数で、`getArgs` は複製へ追記する（元の配列を変更しない）。
 - **未知のシナリオ種別は黙って無視される**（`switch` の `default`）。種別やパラメータを追加・変更したら、
   `README_ja.md` と `README.md` の Scenario Type 表、`conf/plScenarios.sample.yaml` を同時に更新する。
 - **設定のマージ**: `{ ...plConfig, ...plAuth }` の浅いマージで、Authファイル側が優先される。設定キーを

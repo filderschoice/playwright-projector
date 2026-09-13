@@ -17,6 +17,14 @@
   （マスク方式の判断 BL-013 は先取りしない）の節を追加。リンクになっていなかった「[後述]」「[see below]」を Auth ファイル節への
   リンクへ変更し、英語版に欠けていた auth フォルダの説明を追加。`playright`・`Github` の誤記、コンフィグ例の `video.file` の
   字下げ（サンプルと不一致）、英語版冒頭の意味が曖昧な英文を修正。既存の表の構成と記載内容は維持
+- `.github/copilot-instructions.md`（BL-036）: 「状態はモジュールスコープ」の「ブラウザ引数（`getArgs` が配列へ追記する）」を、
+  `getArgs` が既定の起動引数の複製へ追記する現行実装へ合わせて修正。事実の追従で、規範の変更はない
+- `CONTRIBUTING.md`（BL-036）: 「変更手順」を配布元由来の「ルールファイルを追加または更新」から、テスト・README・サンプルの
+  同時更新と `CHANGELOG.md` / `EXECUTE.md` の書き分けを含む手順へ変更（いずれも共通規約に既にある規約の参照）。
+  CI の記述から時点情報「判断待ち」を除去。「ドキュメント構成」表へ README、`templates/`、`.claude/skills/` を追加
+- `.github/instructions/pr.instructions.md`（BL-036）: PR説明の構成へ「影響範囲・ロールバック方針」を追加。
+  `CONTRIBUTING.md` が既に求めている記載要件を正本の構成へ反映したもので、新しい規範の追加ではない
+- `.github/PULL_REQUEST_TEMPLATE.md`（BL-036）: 英語のコメントのみだった内容を、`pr.instructions.md` の見出しと参照コメントへ変更
 
 ## 2026-09-14（自律ループによる単体テストの品質ゲート化）
 
