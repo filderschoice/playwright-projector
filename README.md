@@ -2,23 +2,26 @@
 
 ## [English](./README.md) | [Japanese](./README_ja.md)
 
-playwright-projector is a simple way to use [Playwright](https://github.com/microsoft/playwright). When using Playwright, it is possible to use the Page Class operation as a projector by using a configuration and a scenario without being aware of the logic such as Browser/Context.
+playwright-projector is a simple way to use [Playwright](https://github.com/microsoft/playwright).
+When using Playwright, it is possible to use the Page Class operation as a projector by using a configuration and
+a scenario without being aware of the logic such as Browser/Context.
 
-If you want to implement high-level web tests using Playwright's Core APIs, we recommend you use Playwright, because it's a simple way to try out Playwright.
+If you want to implement high-level web tests using Playwright's Core APIs, we recommend you use Playwright,
+because it's a simple way to try out Playwright.
 
-# # Installation
+## Installation
 
 Clone playright-projector to install dependent packages.
 
-```
+```console
 > git clone https://github.com/filderschoice/playwright-projector.git
 > cd playwright-projector
 > npm ci
 ```
 
-## Getting Started.
+## Getting Started
 
-### Let's get playwright-projector running.
+### Let's get playwright-projector running
 
 playwright-projector runs with two yaml files: a config file and a scenario file.  
 The config file and scenario file default to the following file names.
@@ -35,18 +38,19 @@ This is all you need to do before execution. Please refer to [see below] to prep
 
 Execute playwright-projector with the following command.
 
-```
+```console
 > npm start
 ```
 
-Have you confirmed that playwright-projector is working and that access to Playwright's Github and official HP is handled automatically?  
+Have you confirmed that playwright-projector is working and that access to Playwright's Github and official HP
+is handled automatically?  
 If so, you have finished checking the operation of playwright-projector.  
 By the way, you can see the execution log on the prompt.  
 You can also check the contents of the scenario executed by playwright-projector on the prompt.
 
 #### Execution log of playwright-projector
 
-```
+```text
 $ npm start
 
 > playwright-projector@0.0.1 start
@@ -83,7 +87,7 @@ As mentioned above, playwright-projector consists of two yaml files, a config fi
 
 #### Config file (plConfig.yaml)
 
-```
+```yaml
 # Playwright Options
 browserType: 'chromium'
 headless: false
@@ -106,14 +110,15 @@ video:
  file: 'record-video'
 ```
 
-As those of you who know Playwright will know, the contents of the config file are similar in structure to [playwright.config](https://playwright.dev/docs/test-configuration).  
+As those of you who know Playwright will know, the contents of the config file are similar in structure to
+[playwright.config](https://playwright.dev/docs/test-configuration).  
 It uses similar parameter values, so please check it if you are interested.  
 Note that we plan to add parameters in the config file as needed in future updates.
 
 | Parameter          | Type    | Description                                                                         | Example Setting Value                              |
-| ------------------ | ------- | ----------------------------------------------------------------------------------- | -------------------------------------------------- | ----- |
+| ------------------ | ------- | ----------------------------------------------------------------------------------- | -------------------------------------------------- |
 | browserType        | String  | browser type to operate with Playwright                                             | chromium                                           |
-| headless           | Boolean | whether to start in headless browser                                                | false                                              | false |
+| headless           | Boolean | whether to start in headless browser                                                | false                                              |
 | timeout            | Number  | Timeout value of the scenario to operate with Playwright (ms)                       | 30000                                              |
 | slowMo             | Number  | Browser operation delay value (ms)                                                  | 10                                                 |
 | local              | String  | browser locale                                                                      | ja-JP                                              |
@@ -127,7 +132,7 @@ Note that we plan to add parameters in the config file as needed in future updat
 
 #### Scenario file (plScenario.yaml)
 
-```
+```yaml
 #######################
 # Playwright Operation Scenarios
 #######################
@@ -147,7 +152,8 @@ Note that we plan to add parameters in the config file as needed in future updat
 ```
 
 A scenario file in playwright-projector defines operations in a yaml-style array.  
-By setting the operation parameters that come with the scenario file according to the types available in the scenario, you can easily specify the operations of Playwright.  
+By setting the operation parameters that come with the scenario file according to the types available in the scenario,
+you can easily specify the operations of Playwright.  
 We plan to add more parameters in the scenario file as needed in future updates.
 
 | Scenario Type | Operation Parameters                                                              | Description                                                                                                                                                                |
@@ -163,13 +169,14 @@ We plan to add more parameters in the scenario file as needed in future updates.
 
 #### Auth file (plAuth.yaml)
 
-```
+```yaml
 # Playwright Auth Options
 auth:
   username: 'test'
   password: 'test123'
 ```
 
-In playwright-projector, Auth information in the Proxy environment can be specified in a config file, but it is possible to use an Auth file to separate the Auth information from the config file.  
+In playwright-projector, Auth information in the Proxy environment can be specified in a config file,
+but it is possible to use an Auth file to separate the Auth information from the config file.  
 The parameters are specified in the same way as in the config file.  
 Use them as needed.

@@ -139,17 +139,6 @@
     起票時は不具合P1としたが、playwright 1.29.1 の Page.prototype を確認した結果、Promise を返すメソッドはすべて
     AsyncFunction で現状は await されていたため、依存ライブラリの実装変更への堅牢化としてP3へ訂正した。
     同期関数の戻り値に await しても値は変わらないため、既存シナリオへの互換性影響はない
-- id: BL-001
-  区分: 品質ゲート
-  タスク内容: README.md と README_ja.md の既存 markdownlint 指摘（計38件、MD013/MD040/MD026/MD025）を解消する
-  優先度: P3
-  状態: 未着手
-  担当: AIエージェント
-  完了条件: CLAUDE.md「本リポジトリの品質ゲート定義」の Markdown 静的解析が Summary 0 issues で終了する
-  依存: []
-  根拠: >-
-    品質ゲートを本リポジトリ向けに定義した時点で、main に既存の README 2ファイルのみが不合格だったため。
-    利用者向け文書の書式修正はルール整備と目的が異なるので別ブランチで対応する
 ```
 
 <!-- COPILOT_RECORDS:END -->

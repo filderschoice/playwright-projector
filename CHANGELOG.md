@@ -14,6 +14,9 @@
   すべて除外するよう拡大。`-a` / `-c` で別名の認証ファイルを使った場合もコミット対象にならない。
   検証は `git check-ignore --no-index`（別名6件が除外、サンプル3件と `.gitkeep` が追跡可能）と
   `git ls-files -ci --exclude-standard conf`（除外に該当する追跡済みファイルが0件）で実施
+- `README.md` / `README_ja.md`（BL-001）: markdownlint の既存指摘38件を解消（長い行の折り返し、コードブロックの言語指定、
+  見出し末尾の句読点、`README.md` の `# # Installation` を `## Installation` へ修正、区切り行の列数が合わず表として
+  解釈されていなかったコンフィグパラメータ表の修正）。記載内容は変更していない。Markdown 静的解析が `Summary: 0 issues` になった
 
 ## 2026-09-13（エージェント指示の本リポジトリ向け最適化）
 

@@ -2,7 +2,8 @@
 
 ## [English](./README.md) | [Japanese](./README_ja.md)
 
-playwright-projector は [Playwright](https://github.com/microsoft/playwright) を簡略的に利用するためのツールです。 Playwright を使用する場合における Browser/Context 等のロジックを意識せず、Page Class の操作をコンフィグとシナリオを用いることでプロジェクター的に使用することが可能になります。
+playwright-projector は [Playwright](https://github.com/microsoft/playwright) を簡略的に利用するためのツールです。
+Playwright を使用する場合における Browser/Context 等のロジックを意識せず、Page Class の操作をコンフィグとシナリオを用いることでプロジェクター的に使用することが可能になります。
 
 あくまで簡略的に Playwright を試したい場合のツールとなるため、Playwright の Core API 群を用いて高レベルな Web テストを実装したい場合は、Playwright を使用することをお勧めします。
 
@@ -10,7 +11,7 @@ playwright-projector は [Playwright](https://github.com/microsoft/playwright) �
 
 playwright-projector を Clone して、依存パッケージのインストールを行います。
 
-```
+```console
 > git clone https://github.com/filderschoice/playwright-projector.git
 > cd playwright-projector
 > npm ci
@@ -18,7 +19,7 @@ playwright-projector を Clone して、依存パッケージのインストー�
 
 ## 始めにやること
 
-### playwright-projector を動かしてみましょう。
+### playwright-projector を動かしてみましょう
 
 playwright-projector はコンフィグファイルとシナリオファイルの 2 つの yaml ファイルによって動作します。  
 コンフィグファイルとシナリオファイルは以下のファイル名がデフォルトとなります。
@@ -35,7 +36,7 @@ conf フォルダ内にそれぞれのサンプルファイルがあります。
 
 playwright-projector を以下のコマンドで実行します。
 
-```
+```console
 > npm start
 ```
 
@@ -46,7 +47,7 @@ playwright-projector が動作し、Playwright の Github と公式 HP に対す
 
 #### playwright-projector の実行ログ
 
-```
+```text
 $ npm start
 
 > playwright-projector@0.0.1 start
@@ -83,7 +84,7 @@ playwright-projector を動かすことができたら、基本ファイルの�
 
 #### コンフィグファイル(plConfig.yaml)
 
-```
+```yaml
 # Playwright Options
 browserType: 'chromium'
 headless: false
@@ -106,7 +107,8 @@ video:
  file: 'record-video'
 ```
 
-Playwright をご存じの方なら分かるとおり、コンフィグファイルの内容は[playwright.config](https://playwright.dev/docs/test-configuration)に近い構成となっています。  
+Playwright をご存じの方なら分かるとおり、コンフィグファイルの内容は
+[playwright.config](https://playwright.dev/docs/test-configuration)に近い構成となっています。  
 同様のパラメータ値を使用しているため、気になったら確認してください。  
 なお、今後のアップデートでコンフィグファイル内のパラメータは必要に応じて追加していく予定です。
 
@@ -127,7 +129,7 @@ Playwright をご存じの方なら分かるとおり、コンフィグファイ
 
 #### シナリオファイル(plScenario.yaml)
 
-```
+```yaml
 #######################
 # Playwright Operation Scenarios
 #######################
@@ -163,7 +165,7 @@ playwright-projector のシナリオファイルは yaml 形式の配列にて�
 
 #### Auth ファイル(plAuth.yaml)
 
-```
+```yaml
 # Playwright Auth Options
 auth:
   username: 'test'
