@@ -5,6 +5,31 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-09-14 00:40
+  summary: 実装と README・サンプルの整合テスト10件を追加し、シナリオ種別と設定キーの更新漏れを検出できるようにした
+  details:
+    変更内容: >-
+      test/docs.test.js を追加した。plCore.js の execOperationPage の case ラベル（シナリオ種別と conditions の subType）を
+      ソースから抽出し、README_ja.md・README.md の Scenario Type 表の1列目と一致すること、conditions 行に subType が
+      記載されていることを検証する。サンプルシナリオの種別は実装済みか許容リスト（dummy、黙って無視される例）のみであること、
+      許容リストの種別が実装されていないことを検証する。サンプル3ファイルが期待する形で読み込めること、
+      両 README のパラメータ表とサンプルコンフィグのキー（空でないオブジェクトは「親.子」へ平坦化）が一致することを検証する。
+      サンプルは現状 page.operator の例を含まないため、全種別の網羅は要求せず「未対応種別を含まない」ことのみを検証した
+      （サンプル変更は npm start の実行内容を変えるため今回は行わない）
+    変更ファイル:
+      - test/docs.test.js
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+    検証コマンド: >-
+      npm test / 変異テスト（plCore.js へ README 未記載の種別を追加、README.md の goto 行を削除、サンプルコンフィグへ未記載キーを追加、
+      サンプルシナリオへ未対応 subType を設定し、各回後に git checkout で復元） /
+      npx --no-install eslint index.js src test / npx --no-install prettier --check index.js src test /
+      npx markdownlint-cli2（品質ゲート定義のとおり） / 記録ファイルYAMLの safe_load / npm audit --omit=dev
+    検証結果: >-
+      成功 - npm test は103件成功。変異4種は1〜3件のテストが失敗して検出でき、復元後に差分は無い。
+      ESLint・Prettier・Markdown（0 issues）・記録YAMLは成功、npm audit --omit=dev は0件
+    関連ID:
+      - BL-032
 - date: 2026-09-14 00:38
   summary: index.js（CLI）の単体テスト15件を子プロセス実行で追加し、引数・マージ・読込失敗・実行時例外を網羅した
   details:
