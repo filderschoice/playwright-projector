@@ -5,6 +5,33 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-09-13 23:37
+  summary: YAML読込失敗時に文字列が設定へ展開される問題を修正し、シナリオ読込失敗時はブラウザを起動せず終了する
+  details:
+    変更内容: >-
+      plUtil.readYamlFile（存在有無・データ・エラーを返す）と plUtil.formatParseError（理由と行・列のみを整形）を追加した。
+      plUtil.readFileSync は構文エラー・空ファイル・ファイル無しで既定値を返すよう修正した（従来は構文エラー時に
+      ファイル内容の文字列、空ファイルで空文字列を返していた）。index.js はシナリオが無い・空・構文エラー・配列でない場合、
+      コンフィグ・Authが構文エラー・マッピングでない場合にエラーを出力し、終了コード1でブラウザを起動せず終了する。
+      コンフィグが無い場合は警告を出して従来どおり既定値で継続し、Authが無い場合は従来どおり無出力で継続する。
+      js-yaml の例外メッセージにはファイル内容の抜粋が含まれ、Authファイルではパスワード行が標準出力へ出るため、
+      エラー表示は理由と行・列のみとした
+    変更ファイル:
+      - index.js
+      - src/utils/plUtil.js
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+    検証コマンド: >-
+      scratchpad で runPlaywright をスタブへ差し替えた node -r stub-run.js index.js による7ケース
+      （サンプル正常・コンフィグとAuth無し・シナリオ無し・空・非配列・Auth構文エラー・Auth空）と readFileSync の4ケース /
+      npx --no-install eslint index.js src / npx --no-install prettier --check index.js src /
+      npx markdownlint-cli2（品質ゲート定義のとおり） / 記録ファイルYAMLの safe_load / npm audit --omit=dev
+    検証結果: >-
+      成功 - 正常系はサンプル16シナリオとマージ済みオプションで exec が呼ばれ終了コード0、異常系4ケースは終了コード1で
+      exec が呼ばれないことを確認。ESLint・Prettier・記録YAMLは成功。Markdown は既存 README の38件のみ（BL-001で対応）。
+      npm audit は playwright の high 1件（BL-018で対応）
+    関連ID:
+      - BL-008
 - date: 2026-09-13 23:35
   summary: getOperatePage の空白ページ判定の誤字（about:brank）を修正
   details:
