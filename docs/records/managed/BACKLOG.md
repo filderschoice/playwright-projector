@@ -125,20 +125,6 @@
   完了条件: ESLint が no-undef 有効で終了コード0、Prettier の check が警告なしで終了コード0
   依存: []
   根拠: 2026-09-13の全体レビューで検出。lint設定の変更で CI/CD 定義ではないため自律ループ内で対応可能
-- id: BL-003
-  区分: 品質ゲート
-  タスク内容: >-
-    page.operator は関数の型名に async を含む場合のみ await する。Playwright の実装形態（async 関数か、Promise を返す
-    通常関数か）に依存し、通常関数で Promise を返すAPIでは未完了のまま次へ進み isStack に Promise が保持される
-  優先度: P3
-  状態: 未着手
-  担当: AIエージェント
-  完了条件: page.operator の戻り値を常に await し、isStack で解決済みの値を保持する
-  依存: []
-  根拠: >-
-    起票時は不具合P1としたが、playwright 1.29.1 の Page.prototype を確認した結果、Promise を返すメソッドはすべて
-    AsyncFunction で現状は await されていたため、依存ライブラリの実装変更への堅牢化としてP3へ訂正した。
-    同期関数の戻り値に await しても値は変わらないため、既存シナリオへの互換性影響はない
 ```
 
 <!-- COPILOT_RECORDS:END -->

@@ -264,20 +264,13 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
       // page operate wrapper
       if (plUtil.isNotEmpty(operatePage[scenario.subType]) && plUtil.isFunction(operatePage[scenario.subType])) {
         // exec page api
-        let ret
         let args = undefined
         if (plUtil.isNotEmpty(scenario.args) && plUtil.isObject(scenario.args)) {
           // setup args
           args = scenario.args
         }
-
-        if (plUtil.getObjectType(operatePage[scenario.subType]).indexOf('async') != -1) {
-          // async
-          ret = await operatePage[scenario.subType](args)
-        } else {
-          // normal
-          ret = operatePage[scenario.subType](args)
-        }
+        // always await: resolves Promise-returning APIs regardless of async/normal function (normal values are unchanged)
+        const ret = await operatePage[scenario.subType](args)
         // user stack
         if (scenario.isStack) {
           PlaywrightCores.user[scenario.subType] = ret

@@ -5,6 +5,26 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-09-13 23:44
+  summary: page.operator の戻り値を関数の型名によらず常に await するよう変更
+  details:
+    変更内容: >-
+      plCore.execOperationPage の page.operator で、関数の型名に async を含む場合のみ await していた分岐を廃止し、
+      戻り値を常に await するようにした。Promise を返す通常関数のAPIでも完了を待ち、isStack で解決済みの値を保持する。
+      playwright 1.29.1 と 1.55.1 の Page では Promise を返すメソッドはすべて AsyncFunction のため現状の挙動は変わらず、
+      依存ライブラリの実装形態に依存しないための堅牢化である。同期関数（url・context 等）の戻り値は await しても変わらない
+    変更ファイル:
+      - src/core/plCore.js
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+    検証コマンド: >-
+      scratchpad のモック検証（node mock-test.js。修正前は BL-003 が失敗、修正後は全9件成功） /
+      npx --no-install eslint index.js src / npx --no-install prettier --check index.js src /
+      npx markdownlint-cli2（品質ゲート定義のとおり） / 記録ファイルYAMLの safe_load / npm audit --omit=dev
+    検証結果: >-
+      成功 - ESLint・Prettier・Markdown（0 issues）・記録YAMLは成功。npm audit --omit=dev は0件
+    関連ID:
+      - BL-003
 - date: 2026-09-13 23:42
   summary: playwright を 1.29.1 から 1.55.1 へ更新し npm audit（--omit=dev）の high を解消
   details:
