@@ -57,27 +57,6 @@
   根拠: >-
     (5) は CONTRIBUTING.md に既に定められたPR記載要件を正本の構成へ反映するもので、新しい規範の追加ではない。
     PRテンプレートは見出しのみを置き、各見出しの説明は正本（pr.instructions.md）への参照とすることで二重管理を避ける
-- id: BL-035
-  区分: 品質ゲート
-  タスク内容: >-
-    README.md / README_ja.md の実装との乖離と誤記を直す。
-    (1) CLI オプション（index.js の -c/-s/-a/--version、DESIGN.md FR-01）の説明が無く、別名のファイルを使う方法が分からない。
-    (2) README.md 16行目「playright」、両 README の「Github」の誤記。
-    (3) README.md 43行目「[see below]」、README_ja.md 41行目「[後述]」がリンクになっておらず参照先が不明で、
-    README.md には auth フォルダの説明文自体が無い。
-    (4) 両 README のコンフィグ例の video.file の字下げが1文字で、conf/plConfig.sample.yaml（2文字）と異なる。
-    (5) README.md 9〜10行目の英文が日本語版と意味が異なる（「because it's a simple way」の主語が曖昧で、本ツールが簡易な試用向けである旨が伝わらない）。
-    (6) シナリオ内容（input の value 等）が実行ログへそのまま出力されること（src/runPlaywright.js の logDebug）と、
-    スクリーンショット・動画の保存ファイル名（DESIGN.md FR-08・FR-10）が書かれていない
-  優先度: P2
-  状態: 未着手
-  担当: AIエージェント
-  完了条件: >-
-    (1)〜(6) が両 README で解消し、日英の記載内容が一致している。既存の表の構成（test/docs.test.js が読む
-    パラメータ表・Scenario Type 表の1列目）は維持し、npm test が成功、markdownlint が 0 issues
-  依存: []
-  根拠: >-
-    (6) はマスク方式を決める BL-013（要確認）の判断を先取りせず、現行の挙動を利用者へ注意喚起するだけに留める
 - id: BL-034
   区分: 品質ゲート
   タスク内容: >-

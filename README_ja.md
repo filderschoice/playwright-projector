@@ -38,7 +38,7 @@ playwright-projector はコンフィグファイルとシナリオファイル�
 | シナリオファイル   | plScenarios.yaml | playwright-projector で実行する動作をまとめた定義ファイル |
 
 conf フォルダ内にそれぞれのサンプルファイルがあります。サンプルファイルをコピーして、デフォルトの基本ファイルを作成してください。  
-実行前の準備はこれだけです。conf フォルダ内に auth フォルダがありますが、これは Proxy 環境下で playwright-projector を実行する場合に必要になります。[後述]を参考に必要に応じて準備してください。
+実行前の準備はこれだけです。conf フォルダ内に auth フォルダがありますが、これは Proxy 環境下で playwright-projector を実行する場合に必要になります。[Auth ファイル](#auth-ファイルplauthyaml)を参考に必要に応じて準備してください。
 
 playwright-projector を以下のコマンドで実行します。
 
@@ -46,7 +46,7 @@ playwright-projector を以下のコマンドで実行します。
 > npm start
 ```
 
-playwright-projector が動作し、Playwright の Github と公式 HP に対するアクセスが自動操作されるのが確認できましたか？  
+playwright-projector が動作し、Playwright の GitHub と公式 HP に対するアクセスが自動操作されるのが確認できましたか？  
 確認できたら playwright-projector の動作確認は終了です。  
 ちなみに実行したときの実行ログがプロンプト上に表示されていると思います。  
 このように playwright-projector で実行したシナリオ内容をプロンプト上で確認することも可能です。
@@ -110,7 +110,7 @@ screenshot:
   quality: 70
 # save scenario video
 video:
- file: 'record-video'
+  file: 'record-video'
 ```
 
 Playwright をご存じの方なら分かるとおり、コンフィグファイルの内容は
@@ -181,6 +181,35 @@ auth:
 playwright-projector では Proxy 環境における Auth 情報をコンフィグファイルにて指定することが可能ですが、コンフィグファイルと Auth 情報を切り離すための Auth ファイルを使用することが可能です  
 パラメータの指定方法はコンフィグファイルと同様です。  
 必要に応じて使用してください。
+
+### コマンドラインオプション
+
+既定以外のファイルを使う場合は、オプションでファイルのパスを指定します。
+`npm start` に渡す場合は `--` の後に指定してください。
+
+```console
+> npm start -- -c ./conf/custom/myConfig.yaml -s ./conf/custom/myScenarios.yaml
+```
+
+| オプション              | 説明                           | 既定値                  |
+| ----------------------- | ------------------------------ | ----------------------- |
+| `-c, --config <file>`   | コンフィグファイルのパス       | ./conf/plConfig.yaml    |
+| `-s, --scenario <file>` | シナリオファイルのパス         | ./conf/plScenarios.yaml |
+| `-a, --auth <file>`     | Auth ファイルのパス            | ./conf/auth/plAuth.yaml |
+| `-V, --version`         | バージョンを表示して終了       | -                       |
+| `-h, --help`            | オプションの一覧を表示して終了 | -                       |
+
+`conf` フォルダ直下・`conf/auth`・`conf/custom` に置いた yaml ファイルは、サンプル（`*.sample.yaml`）を除き Git の管理対象外です。
+
+### 実行結果の出力先
+
+| 出力               | 保存先                                                           | 備考                                               |
+| ------------------ | ---------------------------------------------------------------- | -------------------------------------------------- |
+| スクリーンショット | `[screenshot.dir]/playwright-projector_[連番].[screenshot.type]` | 連番は実行ごとに 000 から始まる 3 桁以上のゼロ埋め |
+| ブラウザ操作ビデオ | `result/videos/[video.file].webm`                                | コンフィグに `video.file` がある場合のみ保存       |
+
+実行ログには各シナリオの内容がそのまま出力されます（input の `value` や page.operator の `args` を含みます）。
+シナリオファイルにパスワード等の秘密情報を書かないでください。
 
 ### エラー時の動作
 

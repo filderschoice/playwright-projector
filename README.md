@@ -6,14 +6,14 @@ playwright-projector is a simple way to use [Playwright](https://github.com/micr
 When using Playwright, it is possible to use the Page Class operation as a projector by using a configuration and
 a scenario without being aware of the logic such as Browser/Context.
 
-If you want to implement high-level web tests using Playwright's Core APIs, we recommend you use Playwright,
-because it's a simple way to try out Playwright.
+playwright-projector is intended only for trying out Playwright in a simple way.
+If you want to implement high-level web tests using Playwright's Core APIs, we recommend using Playwright directly.
 
 ## Installation
 
 Node.js 24 or later is required (the target major version is written in `.nvmrc`).
 
-Clone playright-projector to install dependent packages.
+Clone playwright-projector and install the dependent packages.
 
 ```console
 > git clone https://github.com/filderschoice/playwright-projector.git
@@ -40,7 +40,8 @@ The config file and scenario file default to the following file names.
 | Scenario file | plScenarios.yaml | Definition file summarizing the actions to be performed by playwright-projector |
 
 You will find the respective sample files in the conf folder. Copy the sample files to create the default base file.  
-This is all you need to do before execution. Please refer to [see below] to prepare as necessary.
+This is all you need to do before execution. The auth folder in the conf folder is needed when running
+playwright-projector behind a proxy. Refer to [Auth file](#auth-file-plauthyaml) and prepare it as necessary.
 
 Execute playwright-projector with the following command.
 
@@ -48,7 +49,7 @@ Execute playwright-projector with the following command.
 > npm start
 ```
 
-Have you confirmed that playwright-projector is working and that access to Playwright's Github and official HP
+Have you confirmed that playwright-projector is working and that access to Playwright's GitHub and official HP
 is handled automatically?  
 If so, you have finished checking the operation of playwright-projector.  
 By the way, you can see the execution log on the prompt.  
@@ -113,7 +114,7 @@ screenshot:
   quality: 70
 # save scenario video
 video:
- file: 'record-video'
+  file: 'record-video'
 ```
 
 As those of you who know Playwright will know, the contents of the config file are similar in structure to
@@ -167,7 +168,7 @@ We plan to add more parameters in the scenario file as needed in future updates.
 | goto          | arg1: url                                                                         | URL transition processing by page.goto([url])                                                                                                                              |
 | input         | arg1: selector, arg2: value                                                       | bind by page.$$([selector]), input processing by page.keyboard.insertText([value])                                                                                         |
 | submit        | arg1: selector                                                                    | bind by page.$$([selector]), execution process by selector.click()                                                                                                         |
-| screenshot    | arg1: pageIndex(optional), arg2: options(optional)                                | screenshot processing of the displayed page, [pageIndex] saves the specified page, [options] is used instead of the screenshot settings in the config file                |
+| screenshot    | arg1: pageIndex(optional), arg2: options(optional)                                | screenshot processing of the displayed page, [pageIndex] saves the specified page, [options] is used instead of the screenshot settings in the config file                 |
 | wait          | arg1: time(ms)                                                                    | wait processing for [time] time                                                                                                                                            |
 | conditions    | arg1: subType, arg2: selector, arg3: selectorIndex, arg4: savePath(download only) | perform specific processing when there are multiple [selectors], [subType] is supported only for `click`/`download`                                                        |
 | pageChange    | arg1: pageIndex, arg2: useStack                                                   | page switching process when there are multiple pages (tabs), [useStack] is executed when Context is reused (Context reuse requires context retention)                      |
@@ -186,6 +187,36 @@ In playwright-projector, Auth information in the Proxy environment can be specif
 but it is possible to use an Auth file to separate the Auth information from the config file.  
 The parameters are specified in the same way as in the config file.  
 Use them as needed.
+
+### Command line options
+
+To use files other than the defaults, specify their paths with options.
+When passing them to `npm start`, put them after `--`.
+
+```console
+> npm start -- -c ./conf/custom/myConfig.yaml -s ./conf/custom/myScenarios.yaml
+```
+
+| Option                  | Description                        | Default                 |
+| ----------------------- | ---------------------------------- | ----------------------- |
+| `-c, --config <file>`   | path of the config file            | ./conf/plConfig.yaml    |
+| `-s, --scenario <file>` | path of the scenario file          | ./conf/plScenarios.yaml |
+| `-a, --auth <file>`     | path of the Auth file              | ./conf/auth/plAuth.yaml |
+| `-V, --version`         | print the version and exit         | -                       |
+| `-h, --help`            | print the list of options and exit | -                       |
+
+Yaml files placed directly under the `conf` folder, in `conf/auth` and in `conf/custom` are not tracked by Git,
+except for the samples (`*.sample.yaml`).
+
+### Output files
+
+| Output                 | Location                                                           | Note                                                                   |
+| ---------------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| Screenshot             | `[screenshot.dir]/playwright-projector_[number].[screenshot.type]` | the number starts from 000 in each run and is zero-padded to 3+ digits |
+| Browser-operated video | `result/videos/[video.file].webm`                                  | saved only when `video.file` is set in the config file                 |
+
+The execution log prints each scenario as is (including `value` of input and `args` of page.operator).
+Do not write secrets such as passwords in the scenario file.
 
 ### Behavior on errors
 
