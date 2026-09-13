@@ -17,7 +17,11 @@ Clone playright-projector to install dependent packages.
 > git clone https://github.com/filderschoice/playwright-projector.git
 > cd playwright-projector
 > npm ci
+> npx playwright install
 ```
+
+`npx playwright install` installs the browsers operated by Playwright. Each Playwright version requires matching browsers,
+so run it again after updating the dependencies.
 
 ## Getting Started
 
@@ -53,7 +57,7 @@ You can also check the contents of the scenario executed by playwright-projector
 ```text
 $ npm start
 
-> playwright-projector@0.0.1 start
+> playwright-projector@0.5.0 start
 > node index.js
 
 playwright-projector start
@@ -72,7 +76,7 @@ yyyy/mm/dd HH:MM:ss - {"type":"conditions","subType":"click","selector":"#res a"
 yyyy/mm/dd HH:MM:ss - {"type":"wait","time":1000}
 yyyy/mm/dd HH:MM:ss - {"type":"screenshot"}
 yyyy/mm/dd HH:MM:ss - {"type":"conditions","subType":"click","selector":".Layout-sidebar a.text-bold","selectorIndex":0}
-yyyy/mm/dd HH:MM:ss - {"type":"pageChange","pageIndex":0,"useStack":false,"args":null}
+yyyy/mm/dd HH:MM:ss - {"type":"pageChange","pageIndex":0,"useStack":false}
 yyyy/mm/dd HH:MM:ss - {"type":"wait","time":1000}
 yyyy/mm/dd HH:MM:ss - {"type":"screenshot","pageIndex":1}
 yyyy/mm/dd HH:MM:ss - {"type":"screenshot"}
@@ -119,9 +123,9 @@ Note that we plan to add parameters in the config file as needed in future updat
 | ------------------ | ------- | ----------------------------------------------------------------------------------- | -------------------------------------------------- |
 | browserType        | String  | browser type to operate with Playwright                                             | chromium                                           |
 | headless           | Boolean | whether to start in headless browser                                                | false                                              |
-| timeout            | Number  | Timeout value of the scenario to operate with Playwright (ms)                       | 30000                                              |
+| timeout            | Number  | Maximum time to wait for the browser to start (ms)                                  | 30000                                              |
 | slowMo             | Number  | Browser operation delay value (ms)                                                  | 10                                                 |
-| local              | String  | browser locale                                                                      | ja-JP                                              |
+| locale             | String  | browser locale                                                                      | ja-JP                                              |
 | proxyInfo          | Array   | Proxy information, an array of contents set by browserArgs                          | [ '--proxy-server=proxy-url:port-number' ]         |
 | auth               | Object  | auth information set by httpCredentials, separable in plAuth.yaml                   | { 'username': 'hogehoge', 'password': 'fugafuga' } |
 | page.timeout       | Number  | page setDefaultTimeout set value (ms)                                               | 30000                                              |
@@ -130,7 +134,7 @@ Note that we plan to add parameters in the config file as needed in future updat
 | screenshot.quality | Number  | quality of screenshot image saved                                                   | 70                                                 |
 | video.file         | String  | name of file where browser-operated video is saved, directly under 'result/videos/' | 'record-video'                                     |
 
-#### Scenario file (plScenario.yaml)
+#### Scenario file (plScenarios.yaml)
 
 ```yaml
 #######################
@@ -161,7 +165,7 @@ We plan to add more parameters in the scenario file as needed in future updates.
 | goto          | arg1: url                                                                         | URL transition processing by page.goto([url])                                                                                                                              |
 | input         | arg1: selector, arg2: value                                                       | bind by page.$$([selector]), input processing by page.keyboard.insertText([value])                                                                                         |
 | submit        | arg1: selector                                                                    | bind by page.$$([selector]), execution process by selector.click()                                                                                                         |
-| screenshot    | no arg                                                                            | screenshot processing of the displayed page                                                                                                                                |
+| screenshot    | arg1: pageIndex(optional), arg2: options(optional)                                | screenshot processing of the displayed page, [pageIndex] saves the specified page, [options] is used instead of the screenshot settings in the config file                |
 | wait          | arg1: time(ms)                                                                    | wait processing for [time] time                                                                                                                                            |
 | conditions    | arg1: subType, arg2: selector, arg3: selectorIndex, arg4: savePath(download only) | perform specific processing when there are multiple [selectors], [subType] is supported only for `click`/`download`                                                        |
 | pageChange    | arg1: pageIndex, arg2: useStack                                                   | page switching process when there are multiple pages (tabs), [useStack] is executed when Context is reused (Context reuse requires context retention)                      |
@@ -180,3 +184,14 @@ In playwright-projector, Auth information in the Proxy environment can be specif
 but it is possible to use an Auth file to separate the Auth information from the config file.  
 The parameters are specified in the same way as in the config file.  
 Use them as needed.
+
+### Behavior on errors
+
+- If the scenario file is missing, empty, has a YAML syntax error or is not an array,
+  or if the config file or the Auth file has a YAML syntax error or is not a mapping,
+  an error is output and the process exits without launching the browser (exit code 1).
+  Syntax errors show only the reason, line and column, not the file contents.
+- If the config file is missing, a warning is output and default values are used.
+  If the Auth file is missing, it runs as is.
+- If an exception occurs while running scenarios, the page and browser are closed and the video is saved,
+  then an error is output and the process exits (exit code 1).

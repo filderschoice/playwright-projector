@@ -15,7 +15,11 @@ playwright-projector を Clone して、依存パッケージのインストー�
 > git clone https://github.com/filderschoice/playwright-projector.git
 > cd playwright-projector
 > npm ci
+> npx playwright install
 ```
+
+`npx playwright install` は Playwright が操作するブラウザ本体を導入します。
+Playwright のバージョンごとに対応するブラウザが異なるため、依存パッケージを更新した場合も再実行してください。
 
 ## 始めにやること
 
@@ -50,7 +54,7 @@ playwright-projector が動作し、Playwright の Github と公式 HP に対す
 ```text
 $ npm start
 
-> playwright-projector@0.0.1 start
+> playwright-projector@0.5.0 start
 > node index.js
 
 playwright-projector start
@@ -69,7 +73,7 @@ yyyy/mm/dd HH:MM:ss - {"type":"conditions","subType":"click","selector":"#res a"
 yyyy/mm/dd HH:MM:ss - {"type":"wait","time":1000}
 yyyy/mm/dd HH:MM:ss - {"type":"screenshot"}
 yyyy/mm/dd HH:MM:ss - {"type":"conditions","subType":"click","selector":".Layout-sidebar a.text-bold","selectorIndex":0}
-yyyy/mm/dd HH:MM:ss - {"type":"pageChange","pageIndex":0,"useStack":false,"args":null}
+yyyy/mm/dd HH:MM:ss - {"type":"pageChange","pageIndex":0,"useStack":false}
 yyyy/mm/dd HH:MM:ss - {"type":"wait","time":1000}
 yyyy/mm/dd HH:MM:ss - {"type":"screenshot","pageIndex":1}
 yyyy/mm/dd HH:MM:ss - {"type":"screenshot"}
@@ -116,9 +120,9 @@ Playwright をご存じの方なら分かるとおり、コンフィグファイ
 | ------------------ | ------- | -------------------------------------------------------------- | -------------------------------------------------- |
 | browserType        | String  | Playwright で操作するブラウザ種別                              | chromium                                           |
 | headless           | Boolean | ヘッドレスブラウザでの起動有無                                 | false                                              |
-| timeout            | Number  | Playwright で操作するシナリオのタイムアウト値(ms)              | 30000                                              |
+| timeout            | Number  | ブラウザ起動を待つタイムアウト値(ms)                           | 30000                                              |
 | slowMo             | Number  | ブラウザ操作の遅延値(ms)                                       | 10                                                 |
-| local              | String  | ブラウザのロケール                                             | ja-JP                                              |
+| locale             | String  | ブラウザのロケール                                             | ja-JP                                              |
 | proxyInfo          | Array   | Proxy 情報, browserArgs で設定する内容を配列指定               | [ '--proxy-server=プロキシの URL:ポート番号' ]     |
 | auth               | Object  | httpCredentials で設定する auth 情報, plAuth.yaml に分離可     | { 'username': 'hogehoge', 'password': 'fugafuga' } |
 | page.timeout       | Number  | page setDefaultTimeout 設定値(ms)                              | 30000                                              |
@@ -127,7 +131,7 @@ Playwright をご存じの方なら分かるとおり、コンフィグファイ
 | screenshot.quality | Number  | スクリーンショット画像の保存品質                               | 70                                                 |
 | video.file         | String  | ブラウザ操作ビデオの保存ファイル名, 'result/videos/'直下に保存 | 'record-video'                                     |
 
-#### シナリオファイル(plScenario.yaml)
+#### シナリオファイル(plScenarios.yaml)
 
 ```yaml
 #######################
@@ -157,7 +161,7 @@ playwright-projector のシナリオファイルは yaml 形式の配列にて�
 | goto          | arg1: url                                                                         | page.goto([url])による URL 遷移処理                                                                                                              |
 | input         | arg1: selector, arg2: value                                                       | page.$$([selector])による bind, page.keyboard.insertText([value])による入力処理                                                                  |
 | submit        | arg1: selector                                                                    | page.$$([selector])による bind, selector.click()による実行処理                                                                                   |
-| screenshot    | no arg                                                                            | 表示ページのスクリーンショット処理                                                                                                               |
+| screenshot    | arg1: pageIndex(任意), arg2: options(任意)                                        | 表示ページのスクリーンショット処理, [pageIndex]指定時は該当ページを保存, [options]指定時はコンフィグの screenshot の代わりに使用                 |
 | wait          | arg1: time(ms)                                                                    | [time]時間の wait 処理                                                                                                                           |
 | conditions    | arg1: subType, arg2: selector, arg3: selectorIndex, arg4: savePath(download のみ) | [selector]が複数存在する場合の特定処理を実施, [subType]は `click`/`download` のみ対応                                                            |
 | pageChange    | arg1: pageIndex, arg2: useStack                                                   | 複数ページ(タブ)がある場合のページ切替処理, Context の再利用を行う場合は[useStack]を実施(Context の再利用は context 保持が必要)                  |
@@ -175,3 +179,12 @@ auth:
 playwright-projector では Proxy 環境における Auth 情報をコンフィグファイルにて指定することが可能ですが、コンフィグファイルと Auth 情報を切り離すための Auth ファイルを使用することが可能です  
 パラメータの指定方法はコンフィグファイルと同様です。  
 必要に応じて使用してください。
+
+### エラー時の動作
+
+- 次の場合はエラーを出力し、ブラウザを起動せずに終了します（終了コード 1）。
+  - シナリオファイルが無い・空・YAML の構文誤り・配列でない場合
+  - コンフィグファイル・Auth ファイルが YAML の構文誤り・マッピングでない場合
+- YAML の構文誤りのエラーには理由と行・列のみを出力し、ファイルの内容は出力しません。
+- コンフィグファイルが無い場合は警告を出力して既定値で実行し、Auth ファイルが無い場合はそのまま実行します。
+- シナリオの実行中に例外が発生した場合は、ページ・ブラウザを閉じて動画を保存したうえでエラーを出力して終了します（終了コード 1）。

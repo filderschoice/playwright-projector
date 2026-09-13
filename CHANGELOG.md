@@ -21,6 +21,12 @@
   CommonJS に合わせ `sourceType` を `script` にし、Babel 用で効果のない `requireConfigFile` を削除。Prettier が警告していた
   未知オプション `skipStrings` を削除。検証は `eslint --print-config`（no-undef が error）、未定義変数を含む一時ファイルで
   no-undef が検出されること（確認後に削除）、既存コードで ESLint・Prettier が警告なしで成功すること
+- `README.md` / `README_ja.md`（BL-017）: 記載と実装の乖離を修正。パラメータ名 `local` を `locale` へ、`timeout` の説明を
+  「ブラウザ起動を待つタイムアウト値」へ（`launchServer` の `timeout` に渡しているため）、Scenario Type 表の `screenshot` に
+  任意パラメータ `pageIndex` / `options` を追記、シナリオファイル名の誤記と実行ログ例のバージョン・`args` を修正。
+  playwright 1.55.1 は `npm ci` 時にブラウザを自動導入しない（1.29.1 は install script で導入していた）ため、
+  インストール手順へ `npx playwright install` を追加。BL-008 / BL-010 で定めたエラー時の動作（終了コード1）の節を追加。
+  `download` の `savePath` は既に記載済みだったため変更なし（起票時の記述誤り）
 
 ## 2026-09-13（エージェント指示の本リポジトリ向け最適化）
 
