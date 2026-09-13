@@ -60,9 +60,10 @@ PlaywrightCores.setBrowserType = function (type = 'chromium') {
  * @param proxyInfo Proxy Info
  */
 PlaywrightCores.getArgs = function (proxyInfo = []) {
-  let ret = PlaywrightCores.browserArgs
+  // copy args so that the module variable is not modified
+  let ret = [...PlaywrightCores.browserArgs]
   // Set Proxy
-  if (proxyInfo.length == 0) {
+  if (plUtil.isEmpty(proxyInfo)) {
     // No Proxy
     ret.push('--no-proxy-server')
   } else {

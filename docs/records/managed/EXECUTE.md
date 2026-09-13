@@ -5,6 +5,26 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-09-13 23:38
+  summary: getArgs による起動引数の累積と proxyInfo が null のときの例外を修正
+  details:
+    変更内容: >-
+      plCore.getArgs でモジュール変数 browserArgs を複製してからプロキシ引数を追加するよう修正し、呼び出しごとに
+      引数が累積しないようにした。プロキシ有無の判定を proxyInfo.length から plUtil.isEmpty へ変更し、
+      null / undefined / 空配列のいずれでも --no-proxy-server を付与するようにした
+    変更ファイル:
+      - src/core/plCore.js
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+    検証コマンド: >-
+      scratchpad のモック検証（node mock-test.js。修正前は BL-009 が失敗、修正後は全8件成功） /
+      npx --no-install eslint index.js src / npx --no-install prettier --check index.js src /
+      npx markdownlint-cli2（品質ゲート定義のとおり） / 記録ファイルYAMLの safe_load / npm audit --omit=dev
+    検証結果: >-
+      成功 - ESLint・Prettier・記録YAMLは成功。Markdown は既存 README の38件のみ（BL-001で対応）。
+      npm audit は playwright の high 1件（BL-018で対応）
+    関連ID:
+      - BL-009
 - date: 2026-09-13 23:37
   summary: YAML読込失敗時に文字列が設定へ展開される問題を修正し、シナリオ読込失敗時はブラウザを起動せず終了する
   details:
