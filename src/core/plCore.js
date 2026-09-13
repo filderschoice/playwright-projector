@@ -194,7 +194,7 @@ PlaywrightCores.getOperatePage = async function (context, pageIndex = -1) {
     } else {
       for (let idx = 0; idx < pages.length; idx++) {
         const wkPage = pages[idx]
-        if (wkPage.url() !== 'about:brank') {
+        if (wkPage.url() !== 'about:blank') {
           // get operation page
           usePageIdx = idx
           break

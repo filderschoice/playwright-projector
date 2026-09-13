@@ -5,6 +5,26 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-09-13 23:35
+  summary: getOperatePage の空白ページ判定の誤字（about:brank）を修正
+  details:
+    変更内容: >-
+      plCore.getOperatePage で pageIndex 未指定時に比較する URL を 'about:brank' から 'about:blank' へ修正し、
+      空白ページを読み飛ばして最初の表示中ページを操作対象にする処理が機能するようにした。
+      影響を受けるのは pageIndex を指定しない pageChange のみで、全ページが空白の場合は従来どおり先頭を返す
+    変更ファイル:
+      - src/core/plCore.js
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+    検証コマンド: >-
+      scratchpad のモック検証（node mock-test.js BL-007。修正前は失敗、修正後は成功） /
+      npx --no-install eslint index.js src / npx --no-install prettier --check index.js src /
+      npx markdownlint-cli2（品質ゲート定義のとおり） / 記録ファイルYAMLの safe_load / npm audit --omit=dev
+    検証結果: >-
+      成功 - ESLint・Prettier・記録YAMLは成功。Markdown は既存 README の38件のみ（BL-001で対応）。
+      npm audit は playwright の high 1件（BL-018で対応）
+    関連ID:
+      - BL-007
 - date: 2026-09-13 23:34
   summary: pageChange で切替後のページを前面表示するよう修正
   details:
