@@ -202,30 +202,20 @@
   完了条件: 両分岐で screenshot を await し、オプションは複製して使い、連番が1000以上でも桁あふれで上書きしない
   依存: []
   根拠: 2026-09-13の全体レビューで検出。999以下のファイル名は従来と同一のまま維持する
-- id: BL-004
-  区分: 不具合
-  タスク内容: >-
-    conditions の click / download で selectorIndex の境界判定が「<=」のため、要素数と同じ値で undefined.click() の
-    例外になる。download では要素が無いときも waitForEvent の Promise を生成したまま待たず、タイムアウト時に
-    未処理の rejection でプロセスが異常終了する
-  優先度: P1
-  状態: 未着手
-  担当: AIエージェント
-  完了条件: 境界判定が「<」になり、download の待機は要素が存在しクリックする場合にのみ開始される
-  依存: []
-  根拠: 2026-09-13の全体レビューで検出
 - id: BL-003
-  区分: 不具合
+  区分: 品質ゲート
   タスク内容: >-
-    page.operator は関数の型名に async を含む場合のみ await するが、Playwright の Page メソッドは通常関数として
-    Promise を返すため await されない。操作完了前に次へ進み、isStack では Promise が保持され、失敗は未処理 rejection になる
-  優先度: P1
+    page.operator は関数の型名に async を含む場合のみ await する。Playwright の実装形態（async 関数か、Promise を返す
+    通常関数か）に依存し、通常関数で Promise を返すAPIでは未完了のまま次へ進み isStack に Promise が保持される
+  優先度: P3
   状態: 未着手
   担当: AIエージェント
   完了条件: page.operator の戻り値を常に await し、isStack で解決済みの値を保持する
   依存: []
   根拠: >-
-    2026-09-13の全体レビューで検出。同期関数の戻り値に await しても値は変わらないため、既存シナリオへの互換性影響はない
+    起票時は不具合P1としたが、playwright 1.29.1 の Page.prototype を確認した結果、Promise を返すメソッドはすべて
+    AsyncFunction で現状は await されていたため、依存ライブラリの実装変更への堅牢化としてP3へ訂正した。
+    同期関数の戻り値に await しても値は変わらないため、既存シナリオへの互換性影響はない
 - id: BL-002
   区分: 品質ゲート
   タスク内容: npm audit の high のうち js-yaml（4.0.0〜4.3.1）を同一メジャー内の修正版へ更新して解消する

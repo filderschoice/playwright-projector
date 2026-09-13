@@ -288,20 +288,19 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
       switch (scenario.subType) {
         case 'click':
           condSelector = await operatePage.$$(scenario.selector)
-          if (plUtil.isNotEmpty(condSelector) && scenario.selectorIndex <= condSelector.length) {
+          if (plUtil.isNotEmpty(condSelector) && scenario.selectorIndex < condSelector.length) {
             // exist selector: click
             await condSelector[scenario.selectorIndex].click()
           }
           break
         case 'download':
-          // Start waiting for download before clicking. Note no await.
-          const dlPromise = operatePage.waitForEvent('download')
           condSelector = await operatePage.$$(scenario.selector)
-          if (plUtil.isNotEmpty(condSelector) && scenario.selectorIndex <= condSelector.length) {
-            // exist selector: click
-            await condSelector[scenario.selectorIndex].click()
-            // wait download
-            const download = await dlPromise
+          if (plUtil.isNotEmpty(condSelector) && scenario.selectorIndex < condSelector.length) {
+            // start waiting for download before clicking (only when the click happens)
+            const [download] = await Promise.all([
+              operatePage.waitForEvent('download'),
+              condSelector[scenario.selectorIndex].click()
+            ])
             // save downloaded file
             await download.saveAs(scenario.savePath)
           }
