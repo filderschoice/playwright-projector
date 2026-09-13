@@ -113,18 +113,6 @@
   根拠: >-
     秘密情報の取り扱いに関わり、README の実行ログ例（value を表示）という既存仕様の変更も伴うため、
     guardrails 12.4 に従い自己解決せず要確認とする
-- id: BL-011
-  区分: 品質ゲート
-  タスク内容: >-
-    .eslintrc.js で no-undef を無効化しているため未定義変数を検出できない（reqlib のためと推測）。reqlib を globals に
-    宣言して no-undef を有効化し、CommonJS に合わせ sourceType を script にする。.prettierrc.js の未知オプション
-    skipStrings（Prettier が警告を出す）を削除する
-  優先度: P3
-  状態: 未着手
-  担当: AIエージェント
-  完了条件: ESLint が no-undef 有効で終了コード0、Prettier の check が警告なしで終了コード0
-  依存: []
-  根拠: 2026-09-13の全体レビューで検出。lint設定の変更で CI/CD 定義ではないため自律ループ内で対応可能
 ```
 
 <!-- COPILOT_RECORDS:END -->

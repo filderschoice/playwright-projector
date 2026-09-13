@@ -17,6 +17,10 @@
 - `README.md` / `README_ja.md`（BL-001）: markdownlint の既存指摘38件を解消（長い行の折り返し、コードブロックの言語指定、
   見出し末尾の句読点、`README.md` の `# # Installation` を `## Installation` へ修正、区切り行の列数が合わず表として
   解釈されていなかったコンフィグパラメータ表の修正）。記載内容は変更していない。Markdown 静的解析が `Summary: 0 issues` になった
+- `.eslintrc.js` / `.prettierrc.js`（BL-011）: `no-undef` の無効化をやめ、`reqlib` を読み取り専用の globals として宣言。
+  CommonJS に合わせ `sourceType` を `script` にし、Babel 用で効果のない `requireConfigFile` を削除。Prettier が警告していた
+  未知オプション `skipStrings` を削除。検証は `eslint --print-config`（no-undef が error）、未定義変数を含む一時ファイルで
+  no-undef が検出されること（確認後に削除）、既存コードで ESLint・Prettier が警告なしで成功すること
 
 ## 2026-09-13（エージェント指示の本リポジトリ向け最適化）
 
