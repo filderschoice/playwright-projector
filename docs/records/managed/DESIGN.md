@@ -16,7 +16,7 @@
 
 - 対象: YAML のコンフィグとシナリオで Playwright の Page 操作を宣言的に逐次実行する Node.js 製 CLI。
   利用者は Browser / Context を意識しない。
-- 前提環境: Node.js 18 以上（playwright 1.55.1 の要件。リポジトリとしての要件は未定義）、CommonJS。
+- 前提環境: Node.js 24 以上（Active LTS。`package.json` の `engines` を `>=24`、`.nvmrc` を `24` で宣言）、CommonJS。
   依存は playwright ^1.55.1・js-yaml ^4.3.2・commander ^9・app-root-path ^3・mkdirp ^1（mkdirp は未使用関数のみが参照）。
 - ブラウザ本体は `npx playwright install` で別途導入する（playwright 1.55.1 は install script を持たない）。
 

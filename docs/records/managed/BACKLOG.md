@@ -59,23 +59,7 @@
   完了条件: >-
     package.json の指定が ^1.63.0 で npm ls が 1.63.0 を示す。使用APIがすべて存在し、npm audit --omit=dev が0件、
     モック検証が成功している。DESIGN.md・README・共通規約の playwright バージョン記載が更新されている
-  依存:
-    - BL-023
-- id: BL-023
-  区分: 品質ゲート
-  タスク内容: >-
-    Node.js 24（Active LTS）を前提環境として package.json の engines と .nvmrc で宣言し、Node.js 24 上で
-    非推奨警告を含めて依存と src/ が問題なく読み込めることを確認する。README と共通規約のNode.js要件を更新する
-  優先度: P1
-  状態: 未着手
-  担当: AIエージェント
-  完了条件: >-
-    engines.node が >=24、.nvmrc が 24。node --throw-deprecation でスタブ実行が成功する。
-    README_ja.md・README.md・.github/copilot-instructions.md・DESIGN.md のNode.js要件が24で一致している
   依存: []
-  根拠: >-
-    engines は npm の engine-strict 未設定時は警告のみのため、既存利用者の npm ci は失敗しない。
-    上限を設けず >=24 としたのは、次のLTS（26）への追従時に宣言変更を不要にするため
 - id: BL-019
   区分: 人手検証
   タスク内容: >-

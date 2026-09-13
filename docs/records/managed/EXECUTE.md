@@ -5,6 +5,37 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-09-14 00:00
+  summary: Node.js 24 を前提環境として engines と .nvmrc で宣言し、Node.js 24 上で非推奨警告が出ないことを確認
+  details:
+    変更内容: >-
+      package.json（と package-lock.json のルート）へ engines.node を >=24 で追加し、.nvmrc（24）を新規作成した。
+      README_ja.md・README.md のインストール手順へ Node.js 24 以上の要件を追記し、共通規約のセットアップ記載と
+      DESIGN.md の前提環境を Node.js 24 へ更新した。engines は engine-strict 未設定では警告のみで npm ci を妨げない。
+      Node.js 24.18.0 で node --throw-deprecation により依存5件の読込と、plCore（playwright 読込を含む）を実際に読み込み
+      runPlaywright.exec のみ差し替えた index.js のサンプル実行が成功し、src/ に Node.js 23 以降で削除・非推奨となった
+      API（util.is 系、new Buffer、url.parse、recursive 付き rmdirSync 等）の使用が無いことを確認した。コードの変更は無い
+    変更ファイル:
+      - package.json
+      - package-lock.json
+      - .nvmrc
+      - README_ja.md
+      - README.md
+      - .github/copilot-instructions.md
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/DESIGN.md
+      - docs/records/managed/EXECUTE.md
+    検証コマンド: >-
+      npm install --package-lock-only --ignore-scripts /
+      node --throw-deprecation -r stub-run-real-core.js index.js（サンプル3ファイル指定） /
+      node --throw-deprecation -e（依存5件の require） / src の削除済みAPIの grep /
+      npx --no-install eslint index.js src / npx --no-install prettier --check index.js src /
+      npx markdownlint-cli2（品質ゲート定義のとおり） / 記録ファイルYAMLの safe_load / npm audit --omit=dev
+    検証結果: >-
+      成功 - スタブ実行は終了コード0で16シナリオが渡り、非推奨警告による例外は発生しなかった。依存読込も成功。
+      ESLint・Prettier・Markdown（0 issues）・記録YAMLは成功、npm audit --omit=dev は0件
+    関連ID:
+      - BL-023
 - date: 2026-09-13 23:50
   summary: 開発依存の間接依存6件を npm audit fix で同一メジャー内へ更新し、npm audit（dev含む）を0件にした
   details:

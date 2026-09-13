@@ -21,6 +21,9 @@
     "url": "https://github.com/filderschoice/playwright-projector/issues"
   },
   "homepage": "https://github.com/filderschoice/playwright-projector#readme",
+  "engines": {
+    "node": ">=24"
+  },
   "devDependencies": {
     "eslint": "^8.30.0",
     "eslint-config-prettier": "^8.5.0",

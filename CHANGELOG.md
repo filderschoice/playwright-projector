@@ -10,6 +10,8 @@ Node.js 24（Active LTS）と playwright 最新版（1.63.0）への更新を前
 - `BACKLOG.md`: BL-023（Node.js 24 の宣言と非推奨警告の確認）、BL-024（playwright 1.63.0 への更新）、
   BL-025（slowMo が launchServer へ渡され無視されている不具合）、BL-026（非推奨の ElementHandle.type の置き換え）、
   BL-027（他依存のメジャー更新の判断、ブロック）を起票。人手検証 BL-019 を今回の更新対象へ合わせて更新
+- `.github/copilot-instructions.md`（BL-023）: セットアップ手順の Node.js 要件を「未定義（playwright 1.55.1 は 18 以上）」から
+  「Node.js 24 以上（`engines` と `.nvmrc` で宣言）」へ更新。事実の追従で、規範（禁止事項・承認要件）の変更はない
 
 ## 2026-09-13（自律ループによる全体レビュー）
 
