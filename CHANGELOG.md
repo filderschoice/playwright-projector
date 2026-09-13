@@ -10,6 +10,10 @@
 
 - `BACKLOG.md`: レビュー指摘として BL-003〜BL-020 を起票（不具合8件、品質ゲート6件、人手検証3件、要確認1件、
   ブロック1件）。既存の BL-002 を js-yaml（BL-002）と playwright（BL-018、実行確認は BL-019）に分割
+- `.gitignore`（BL-012）: `conf/` 直下・`conf/auth/`・`conf/custom/` の `*.yaml` / `*.yml` をサンプル（`*.sample.yaml`）以外
+  すべて除外するよう拡大。`-a` / `-c` で別名の認証ファイルを使った場合もコミット対象にならない。
+  検証は `git check-ignore --no-index`（別名6件が除外、サンプル3件と `.gitkeep` が追跡可能）と
+  `git ls-files -ci --exclude-standard conf`（除外に該当する追跡済みファイルが0件）で実施
 
 ## 2026-09-13（エージェント指示の本リポジトリ向け最適化）
 
