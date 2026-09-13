@@ -5,6 +5,38 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-09-14 00:10
+  summary: playwright を 1.55.1 から最新の 1.63.0 へ更新し、使用APIの存在と非推奨指定を型定義で確認
+  details:
+    変更内容: >-
+      npm install playwright@^1.63.0 で依存を更新した（package.json の指定は ^1.63.0、playwright-core も 1.63.0）。
+      lock からは playwright 1.55.1 が optionalDependencies に持っていた fsevents 2.3.2（macOS 専用）が消えたが、
+      1.63.0 の package.json が fsevents を依存に持たなくなったことによる上流由来の変化で、本リポジトリの直接依存の削除ではない。
+      playwright-core の types.d.ts から、使用する BrowserType・BrowserServer・Browser・BrowserContext・Page・ElementHandle・
+      Keyboard・Download・Video のメソッドがすべて存在し、コンテキストオプション（ignoreHTTPSErrors・locale・
+      httpCredentials・recordVideo.dir）とスクリーンショットオプション（path・type・quality）も存在することを確認した。
+      非推奨は ElementHandle.type のみ（BL-026）で、slowMo は launchServer のオプションに無く ConnectOptions にあること（BL-025）を確認した。
+      ブラウザのリビジョンが変わる（chromium 1243 等）ため利用者は npx playwright install の再実行が必要で、実ブラウザでの確認は
+      BL-019 の人手検証とした。DESIGN.md と共通規約の playwright バージョン記載を更新した
+    変更ファイル:
+      - package.json
+      - package-lock.json
+      - .github/copilot-instructions.md
+      - CHANGELOG.md
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/DESIGN.md
+      - docs/records/managed/EXECUTE.md
+    検証コマンド: >-
+      npm ls playwright playwright-core / lock 差分のパッケージ増減確認 /
+      node --throw-deprecation check-api.js（型定義の使用API・非推奨・slowMo 確認と BrowserType 実体の確認） /
+      node --throw-deprecation -r stub-run-real-core.js index.js（サンプル3ファイル指定） /
+      npx --no-install eslint index.js src / npx --no-install prettier --check index.js src /
+      npx markdownlint-cli2（品質ゲート定義のとおり） / 記録ファイルYAMLの safe_load / npm audit --omit=dev
+    検証結果: >-
+      成功 - 使用API 24件が存在（非推奨1件）、chromium・firefox・webkit の launchServer/connect を確認、スタブ実行は終了コード0。
+      ESLint・Prettier・Markdown（0 issues）・記録YAMLは成功、npm audit --omit=dev は0件
+    関連ID:
+      - BL-024
 - date: 2026-09-14 00:00
   summary: Node.js 24 を前提環境として engines と .nvmrc で宣言し、Node.js 24 上で非推奨警告が出ないことを確認
   details:

@@ -12,6 +12,7 @@ Node.js 24（Active LTS）と playwright 最新版（1.63.0）への更新を前
   BL-027（他依存のメジャー更新の判断、ブロック）を起票。人手検証 BL-019 を今回の更新対象へ合わせて更新
 - `.github/copilot-instructions.md`（BL-023）: セットアップ手順の Node.js 要件を「未定義（playwright 1.55.1 は 18 以上）」から
   「Node.js 24 以上（`engines` と `.nvmrc` で宣言）」へ更新。事実の追従で、規範（禁止事項・承認要件）の変更はない
+- `.github/copilot-instructions.md`（BL-024）: セットアップ手順の playwright の記載を 1.55 系から 1.63 系へ更新。事実の追従
 
 ## 2026-09-13（自律ループによる全体レビュー）
 
