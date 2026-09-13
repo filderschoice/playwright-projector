@@ -5,6 +5,131 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-09-14 00:40
+  summary: 実装と README・サンプルの整合テスト10件を追加し、シナリオ種別と設定キーの更新漏れを検出できるようにした
+  details:
+    変更内容: >-
+      test/docs.test.js を追加した。plCore.js の execOperationPage の case ラベル（シナリオ種別と conditions の subType）を
+      ソースから抽出し、README_ja.md・README.md の Scenario Type 表の1列目と一致すること、conditions 行に subType が
+      記載されていることを検証する。サンプルシナリオの種別は実装済みか許容リスト（dummy、黙って無視される例）のみであること、
+      許容リストの種別が実装されていないことを検証する。サンプル3ファイルが期待する形で読み込めること、
+      両 README のパラメータ表とサンプルコンフィグのキー（空でないオブジェクトは「親.子」へ平坦化）が一致することを検証する。
+      サンプルは現状 page.operator の例を含まないため、全種別の網羅は要求せず「未対応種別を含まない」ことのみを検証した
+      （サンプル変更は npm start の実行内容を変えるため今回は行わない）
+    変更ファイル:
+      - test/docs.test.js
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+    検証コマンド: >-
+      npm test / 変異テスト（plCore.js へ README 未記載の種別を追加、README.md の goto 行を削除、サンプルコンフィグへ未記載キーを追加、
+      サンプルシナリオへ未対応 subType を設定し、各回後に git checkout で復元） /
+      npx --no-install eslint index.js src test / npx --no-install prettier --check index.js src test /
+      npx markdownlint-cli2（品質ゲート定義のとおり） / 記録ファイルYAMLの safe_load / npm audit --omit=dev
+    検証結果: >-
+      成功 - npm test は103件成功。変異4種は1〜3件のテストが失敗して検出でき、復元後に差分は無い。
+      ESLint・Prettier・Markdown（0 issues）・記録YAMLは成功、npm audit --omit=dev は0件
+    関連ID:
+      - BL-032
+- date: 2026-09-14 00:38
+  summary: index.js（CLI）の単体テスト15件を子プロセス実行で追加し、引数・マージ・読込失敗・実行時例外を網羅した
+  details:
+    変更内容: >-
+      test/helpers/stub-run.js（node -r で読み込み、runPlaywright を受け取った値を出力するだけのスタブへ差し替える preload）と
+      test/index.test.js を追加した。子プロセスは一時ディレクトリを作業ディレクトリとし、ダミー値の YAML だけを配置するため、
+      リポジトリの conf 配下の実ファイルは読まない。既定パスと読込先ログ、-c/-s/-a と長いオプション、--version、
+      Auth 優先の浅いマージ、コンフィグ無しの [WARN] 継続、Auth 無し・空の無出力継続、読込失敗7ケースの [ERROR] と終了コード1
+      （exec が呼ばれないこと）、Auth 構文誤りで資格情報を出力しないこと、exec 例外時のエラーとスタック出力と終了コード1を検証する
+    変更ファイル:
+      - test/helpers/stub-run.js
+      - test/index.test.js
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+    検証コマンド: >-
+      npm test / 変異テスト（index.js へマージ順の逆転・エラー表示への例外メッセージ出力・読込失敗の終了コード0・既定パスの変更を
+      一時的に注入して npm test、各回後に git checkout で復元） /
+      npx --no-install eslint index.js src test / npx --no-install prettier --check index.js src test /
+      npx markdownlint-cli2（品質ゲート定義のとおり） / 記録ファイルYAMLの safe_load / npm audit --omit=dev
+    検証結果: >-
+      成功 - npm test は93件成功（約3.5秒）。変異4種は1〜8件のテストが失敗して検出でき、復元後の index.js に差分は無い。
+      ESLint・Prettier・Markdown（0 issues）・記録YAMLは成功、npm audit --omit=dev は0件
+    関連ID:
+      - BL-031
+- date: 2026-09-14 00:36
+  summary: runPlaywright の単体テスト8件を追加し、起動から終了までの流れと例外時の後始末を網羅した
+  details:
+    変更内容: >-
+      test/runPlaywright.test.js で plCore の各関数をモックへ差し替え、正常系（呼び出し順、getArgs・setBrowserType・launchServer・
+      connectBrowser（slowMo）・newContext・setPageParameter・execOperationPage への引数、各シナリオ後の1秒待機、
+      動画の保存先 result/videos/<file>.webm、開始・終了ログ）、シナリオ・page・video が無い場合、引数省略時と、
+      異常系（シナリオ例外時の後始末順と例外の再送出、後始末失敗時の [WARN] と元の例外の保持、正常終了時の後始末失敗、
+      接続失敗時はサーバーのみ閉じること、launchServer 失敗時）を検証する。シナリオの逐次実行は、非同期に完了する
+      モックで前のシナリオの完了後に次が始まることを確認する
+    変更ファイル:
+      - test/runPlaywright.test.js
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+    検証コマンド: >-
+      npm test / 変異テスト（runPlaywright.js へ slowMo の渡し漏れ・後始末の保護の除去・シナリオの await 漏れを一時的に注入し、
+      挙動を変えない変更を対照として npm test、各回後に git checkout で復元） /
+      npx --no-install eslint index.js src test / npx --no-install prettier --check index.js src test /
+      npx markdownlint-cli2（品質ゲート定義のとおり） / 記録ファイルYAMLの safe_load / npm audit --omit=dev
+    検証結果: >-
+      成功 - npm test は78件成功。変異3種は1〜3件のテストが失敗して検出でき、対照は失敗0件、復元後の src に差分は無い。
+      ESLint・Prettier・Markdown（0 issues）・記録YAMLは成功、npm audit --omit=dev は0件
+    関連ID:
+      - BL-030
+- date: 2026-09-14 00:34
+  summary: plCore の単体テスト39件を Playwright のモックで追加し、全シナリオ種別と起動・コンテキスト設定を網羅した
+  details:
+    変更内容: >-
+      test/helpers/mocks.js に Page・ElementHandle・BrowserContext・BrowserType のモック（呼び出し名と引数を記録）を追加し、
+      test/core/plCore.test.js で setBrowserType、getArgs（空判定・累積しないこと）、launchServer（slowMo を渡さない）、
+      getEndpoint、connectBrowser（slowMo 既定10）、newContext（locale・httpCredentials・recordVideo）、close（1秒待機と例外の抑止）、
+      setPageParameter、getOperatePage、スクリーンショット連番とファイル名、execOperationPage の全種別（goto・input・submit・wait・
+      screenshot・conditions の click と download・pageChange・page.operator・空と未知の種別）を検証する。
+      各テストの前に freshRequire で plCore を読み直し、モジュールスコープの状態を初期化する。固定待機は setTimeout の即時化で短縮した
+    変更ファイル:
+      - test/helpers/mocks.js
+      - test/core/plCore.test.js
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+    検証コマンド: >-
+      npm test / 変異テスト（plCore.js へ過去の不具合5種を一時的に再注入して npm test、各回後に git checkout で復元） /
+      npx --no-install eslint index.js src test / npx --no-install prettier --check index.js src test /
+      npx markdownlint-cli2（品質ゲート定義のとおり） / 記録ファイルYAMLの safe_load / npm audit --omit=dev
+    検証結果: >-
+      成功 - npm test は70件成功。変異5種（selectorIndex の境界、about:blank の誤字、connect のオプション、bringToFront の対象、
+      起動引数の累積）はいずれも1〜2件のテストが失敗して検出でき、復元後の src に差分は無い。
+      ESLint・Prettier・Markdown（0 issues）・記録YAMLは成功、npm audit --omit=dev は0件
+    関連ID:
+      - BL-029
+- date: 2026-09-14 00:31
+  summary: node:test による単体テスト基盤を追加し、npm test で plUtil のテストを実行できるようにした
+  details:
+    変更内容: >-
+      package.json の scripts.test をプレースホルダ（必ず失敗）から node --test "test/**/*.test.js" へ変更した。
+      依存パッケージは追加せず、Node.js 24 標準の node:test と node:assert/strict を使う。共通ヘルパー test/helpers/setup.js に
+      global.reqlib の初期化、src 配下をキャッシュから外して読み直す freshRequire（モジュールスコープの状態をテストごとに初期化）、
+      自動削除される一時ディレクトリ、setTimeout の即時化、console.log の取得を用意した。
+      test/utils/plUtil.test.js で実行経路の関数（isEmpty・isNotEmpty・isFunction・isObject・logInfo・logDebug・readYamlFile・
+      formatParseError・readFileSync・pathJoin）の31件を検証する。構文誤りのエラー表示にファイル内容（ダミーの資格情報）が
+      含まれないことも検証する。未使用関数は BL-014 の判断待ちのため対象外とした
+    変更ファイル:
+      - package.json
+      - test/helpers/setup.js
+      - test/utils/plUtil.test.js
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+    検証コマンド: >-
+      npm test / 一時的に失敗テストを置いた npm test（bash と PowerShell の双方で終了コード確認、確認後に削除） /
+      git check-ignore（test 配下が除外されないこと） / npx --no-install eslint index.js src test /
+      npx --no-install prettier --check index.js src test / npx markdownlint-cli2（品質ゲート定義のとおり） /
+      記録ファイルYAMLの safe_load / npm audit --omit=dev
+    検証結果: >-
+      成功 - npm test は31件成功で終了コード0、失敗テストがあると bash・PowerShell とも終了コード1。test 配下は Git 管理対象。
+      ESLint・Prettier（test を含む）・Markdown（0 issues）・記録YAMLは成功、npm audit --omit=dev は0件
+    関連ID:
+      - BL-028
 - date: 2026-09-14 00:30
   summary: input シナリオで非推奨の ElementHandle.type をやめ、ElementHandle.focus でフォーカスする
   details:

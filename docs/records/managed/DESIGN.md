@@ -89,7 +89,8 @@
 ## 実装制約
 
 - 技術制約: CommonJS、Prettier（セミコロンなし・シングルクォート・120桁・末尾カンマなし）、ESLint 8 形式
-  （`no-undef` 有効、`reqlib` は globals）。自動テストは存在しない。
+  （`no-undef` 有効、`reqlib` は globals）。単体テストは Node.js 標準の `node:test`（依存追加なし）で、`npm test` が
+  `test/**/*.test.js` を実行する。
 - 運用制約: `npm start` は実ブラウザを起動し外部サイトへアクセスするため人手検証とする。出力先 `result/ss/`・
   `result/videos/` は Git 管理外。依存更新時はブラウザの再導入（`npx playwright install`）が必要。
 
@@ -99,7 +100,16 @@
   セットアップ（`npm ci` と `npx playwright install`）と実行手順を提示する。
 - 追加実装時の出力要件: 変更対象ファイル一覧と差分、影響する FR 番号、README / サンプルの同時更新の有無、
   既存シナリオへの互換性影響を示す。明示されていない要件は既存仕様（本書の FR）を維持する。
-- 要件トレーサビリティ要件: 自動テストが無いため、挙動を変える変更ではブラウザを起動しないモック（`global.reqlib` を
-  定義し、`page` / `context` を模したオブジェクトで `plCore` を呼ぶ、または `require.cache` で `plCore` /
-  `runPlaywright` を差し替えて `index.js` を実行する）で修正前後の差を確認し、実ブラウザでの確認は人手検証として記録する。
+- 要件トレーサビリティ要件: FR と単体テストを次のとおり対応させ、挙動を変える変更では該当テストを追加・更新して
+  `npm test` を品質ゲートとして通す。テストはブラウザを起動せず外部通信もしない。実ブラウザでの確認は人手検証として記録する。
+  - `test/utils/plUtil.test.js`: 空判定・型判定・ログ整形・YAML/JSON 読込・構文エラー表示（ファイル内容を出さない）。
+  - `test/core/plCore.test.js`: FR-04〜FR-06・FR-08・FR-09。`test/helpers/mocks.js` の Page / BrowserContext / BrowserType
+    モックで呼び出し名と引数を記録して検証する。
+  - `test/runPlaywright.test.js`: FR-04・FR-06（page.timeout）・FR-07・FR-10。plCore の関数をモックへ差し替える。
+  - `test/index.test.js`: FR-01〜FR-03・FR-10 の終了コード。`test/helpers/stub-run.js` を `node -r` で読み込んで
+    runPlaywright を差し替え、一時ディレクトリにダミー値の設定を置いて子プロセス実行する（`conf/` の実ファイルは読まない）。
+  - `test/docs.test.js`: plCore のシナリオ種別・conditions の subType と両 README の Scenario Type 表、サンプルシナリオの種別、
+    両 README のパラメータ表とサンプルコンフィグのキーの一致（更新漏れの検出）。
+  - テストの共通制約: `src/` はモジュールスコープに状態を持つため `test/helpers/setup.js` の `freshRequire` で読み直す。
+    固定待機は `skipTimers`（setTimeout の即時化）で短縮する。テストデータはダミー値のみとする。
 <!-- COPILOT_RECORDS:END -->

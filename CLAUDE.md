@@ -29,17 +29,19 @@ Node.js 製CLI）で作業するときの実行ルールです。セッション
 
 | ゲート | コマンド | 合否基準 |
 | --- | --- | --- |
-| 静的解析（JavaScript） | `npx --no-install eslint index.js src` | 終了コード0 |
-| フォーマット（JavaScript） | `npx --no-install prettier --check index.js src` | 終了コード0 |
+| 静的解析（JavaScript） | `npx --no-install eslint index.js src test` | 終了コード0 |
+| フォーマット（JavaScript） | `npx --no-install prettier --check index.js src test` | 終了コード0 |
 | 静的解析（Markdown） | `npx markdownlint-cli2 "**/*.md" ".claude/**/*.md" ".github/**/*.md" "#node_modules"` | `Summary: 0 issues` |
 | 記録ファイルのYAML検証 | `docs/records/spec/FORMAT.md`「YAMLとしての体裁」に従いマーカー内を `yaml.safe_load` へ通す | 例外なく読み込めること |
 | 脆弱性チェック | `npm audit --omit=dev` | 判定基準は未定義（未確認）。結果と件数を記録し、新規の high 以上は `BACKLOG.md` へ起票する |
-| 単体テスト | (対象外) | テストが存在しない（`npm test` はプレースホルダで必ず失敗する）。テストを追加した場合は本表を更新する |
+| 単体テスト | `npm test` | 終了コード0（失敗0件）。`node:test` で `test/**/*.test.js` を実行する。ブラウザ導入・外部通信は不要 |
 | 実行確認 | `npm start` | 自動ゲートに含めない。実ブラウザ起動と外部サイトへのアクセスを伴うため人手検証とする |
 
 - `--no-install` を外さないこと。未インストール時に npx が最新版（ESLint 9 以降）を取得し、
   `.eslintrc.js`（ESLint 8 形式）を読まずに誤判定する。
 - `**/*.md` はドット始まりのディレクトリを拾わないため、`.claude/` と `.github/` を明示している。
+- 単体テストは `npm ci` 済みであれば追加の準備なしで実行できる（Playwright はモックで代替し、`index.js` は
+  一時ディレクトリのダミー設定で検証するため、`npx playwright install` と `conf/` の実ファイルは不要）。
 - `区分: 人手検証` のBACKLOGタスクは自動品質ゲートの合否判定から除外する。
 
 ## 記録ファイルの権限設定（MUST）
