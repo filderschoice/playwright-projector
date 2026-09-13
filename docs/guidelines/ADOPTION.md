@@ -1,7 +1,8 @@
 # Copilot / Claude Code ルール導入・運用ガイド
 
-本リポジトリで管理している Copilot・Claude Code 用のプロセスルールとガードレールを、新規リポジトリと
-既存リポジトリへ適用して運用するための実務手順です。
+配布元リポジトリで管理している Copilot・Claude Code 用のプロセスルールとガードレールを、新規リポジトリと
+既存リポジトリへ適用して運用するための実務手順です。本リポジトリ（playwright-projector）は配布先の1つで、
+本ガイドは配布元から取り込んだ汎用手順です。
 
 - 導入判断 → 導入実施 → 日常運用の順に読みます。
 - すぐ着手する場合は「2. クイックスタート」から開始します。
@@ -16,6 +17,7 @@
 | `rules/guardrails-unified.v1.md` | セキュリティ・プライバシー・ガバナンス統制の正本 | 必須 |
 | `docs/guidelines/RULE.md` | 汎用フレームワーク（基本原則・出力要件・完了条件） | 必須 |
 | `docs/guidelines/ADOPTION.md` | 本ガイド（導入・移行・日常運用） | 必須 |
+| `docs/guidelines/README.md` | ガイドラインの索引とエージェント指示ファイルからの参照方法 | 必須 |
 | `CONTRIBUTING.md` | 規定ブランチ、ブランチ・コミット規約、レビュー要件、指示ファイルの構成規約 | 必須 |
 | `CHANGELOG.md` | 変更履歴（配布元の追従判断にも使用） | 必須 |
 | `docs/records/README.md` | records 配下の運用ルール | 必須 |
@@ -29,6 +31,7 @@
 | `.github/PULL_REQUEST_TEMPLATE.md` | PRテンプレート | 必須 |
 | `templates/app-guardrail-template.yaml` | アプリ別ガードレール設定（`replace-me` を解消） | 必須 |
 | `templates/model-risk-register-template.csv` | モデルリスク登録簿（初期リスク2件以上） | 必須 |
+| `.markdownlint-cli2.yaml` | Markdownlint の設定（品質ゲートで Markdown 静的解析を行う場合に使用） | 任意 |
 | `.vscode/settings.json` | `pr.instructions.md` を Copilot Chat から参照させる設定 | Copilot のみ |
 | `CLAUDE.md` | Claude Code 固有の差分と追加規約（リポジトリルート直下） | Claude Code のみ |
 | `.claude/settings.json` | 記録ファイル編集を権限プロンプトなしで許可する設定 | Claude Code のみ・任意 |
@@ -51,7 +54,7 @@
 `CLAUDE.md` は `@import` 記法で指定したファイルをセッション開始時に自動読み込みします。リポジトリルート
 からの相対パスが崩れていないことを確認してください。
 
-自動読み込みはセッションのコンテキストを消費し続けるため、対象は最小限にします。配布元では次の2ファイルのみを
+自動読み込みはセッションのコンテキストを消費し続けるため、対象は最小限にします。配布元と本リポジトリでは次の2ファイルのみを
 `@import` し、`CONTRIBUTING.md` / `docs/guidelines/RULE.md` / `docs/records/spec/FORMAT.md` などは必要に
 なった時点で読む構成にしています。
 
@@ -90,7 +93,7 @@ Claude Code 固有の運用モードです。採用する場合は次の4点が�
 
 - 推奨方式: 配布先リポジトリに「正本コピー」を配置し、差分を PR で管理する。
 - バージョン管理: ルール本文はファイル名バージョン（例: `guardrails-unified.v1.md`）で管理する。
-- 更新同期: 配布元（本リポジトリ）の `CHANGELOG.md` を参照して追従判断する。
+- 更新同期: 配布元リポジトリの `CHANGELOG.md` を参照して追従判断する。
 
 ## 4. 既存リポジトリへの適用手順
 

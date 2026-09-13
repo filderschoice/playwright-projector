@@ -25,6 +25,9 @@
 - `.github/instructions/pr.instructions.md`（BL-036）: PR説明の構成へ「影響範囲・ロールバック方針」を追加。
   `CONTRIBUTING.md` が既に求めている記載要件を正本の構成へ反映したもので、新しい規範の追加ではない
 - `.github/PULL_REQUEST_TEMPLATE.md`（BL-036）: 英語のコメントのみだった内容を、`pr.instructions.md` の見出しと参照コメントへ変更
+- `docs/guidelines/ADOPTION.md`（BL-037）: 本リポジトリを配布元として書いていた3箇所（冒頭・「1.1」・「3. 適用方式」）を、
+  配布元リポジトリと配布先である本リポジトリを区別する記述へ修正。導入資産一覧へ `docs/guidelines/README.md` と
+  `.markdownlint-cli2.yaml`（任意）を追加。手順・チェックリストの意味は変更していない
 
 ## 2026-09-14（自律ループによる単体テストの品質ゲート化）
 
