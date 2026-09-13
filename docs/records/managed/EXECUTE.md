@@ -5,6 +5,31 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-09-14 00:34
+  summary: plCore の単体テスト39件を Playwright のモックで追加し、全シナリオ種別と起動・コンテキスト設定を網羅した
+  details:
+    変更内容: >-
+      test/helpers/mocks.js に Page・ElementHandle・BrowserContext・BrowserType のモック（呼び出し名と引数を記録）を追加し、
+      test/core/plCore.test.js で setBrowserType、getArgs（空判定・累積しないこと）、launchServer（slowMo を渡さない）、
+      getEndpoint、connectBrowser（slowMo 既定10）、newContext（locale・httpCredentials・recordVideo）、close（1秒待機と例外の抑止）、
+      setPageParameter、getOperatePage、スクリーンショット連番とファイル名、execOperationPage の全種別（goto・input・submit・wait・
+      screenshot・conditions の click と download・pageChange・page.operator・空と未知の種別）を検証する。
+      各テストの前に freshRequire で plCore を読み直し、モジュールスコープの状態を初期化する。固定待機は setTimeout の即時化で短縮した
+    変更ファイル:
+      - test/helpers/mocks.js
+      - test/core/plCore.test.js
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+    検証コマンド: >-
+      npm test / 変異テスト（plCore.js へ過去の不具合5種を一時的に再注入して npm test、各回後に git checkout で復元） /
+      npx --no-install eslint index.js src test / npx --no-install prettier --check index.js src test /
+      npx markdownlint-cli2（品質ゲート定義のとおり） / 記録ファイルYAMLの safe_load / npm audit --omit=dev
+    検証結果: >-
+      成功 - npm test は70件成功。変異5種（selectorIndex の境界、about:blank の誤字、connect のオプション、bringToFront の対象、
+      起動引数の累積）はいずれも1〜2件のテストが失敗して検出でき、復元後の src に差分は無い。
+      ESLint・Prettier・Markdown（0 issues）・記録YAMLは成功、npm audit --omit=dev は0件
+    関連ID:
+      - BL-029
 - date: 2026-09-14 00:31
   summary: node:test による単体テスト基盤を追加し、npm test で plUtil のテストを実行できるようにした
   details:

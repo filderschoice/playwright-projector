@@ -30,7 +30,6 @@
     品質ゲート定義に単体テスト（npm test、終了コード0）があり、ESLint・Prettier のコマンドが test を含む。
     共通規約・CONTRIBUTING.md・DESIGN.md にテストの配置・実行方法・更新規約が記載され、「自動テストは存在しない」の記述が残っていない
   依存:
-    - BL-029
     - BL-030
     - BL-031
     - BL-032
@@ -67,17 +66,6 @@
   状態: 未着手
   担当: AIエージェント
   完了条件: DESIGN.md の FR-04・FR-06（page.timeout）・FR-07・FR-10 をテストで網羅し、npm test が成功する
-  依存: []
-- id: BL-029
-  区分: 品質ゲート
-  タスク内容: >-
-    src/core/plCore.js の単体テストを追加する。Page・Context・BrowserType のモックで、ブラウザ種別選択、起動引数、
-    launchServer・connect・newContext のオプション、getOperatePage、スクリーンショット連番とファイル名、
-    execOperationPage の全シナリオ種別（goto・input・submit・wait・screenshot・conditions・pageChange・page.operator・未知種別）を検証する
-  優先度: P1
-  状態: 未着手
-  担当: AIエージェント
-  完了条件: DESIGN.md の FR-04〜FR-06・FR-08・FR-09 をテストで網羅し、npm test が成功する
   依存: []
 - id: BL-027
   区分: 品質ゲート
