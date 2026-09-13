@@ -5,6 +5,33 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-09-13 23:42
+  summary: playwright を 1.29.1 から 1.55.1 へ更新し npm audit（--omit=dev）の high を解消
+  details:
+    変更内容: >-
+      npm install playwright@1.55.1 で依存を更新した（package.json の指定は ^1.55.1）。更新先は GHSA-7mvr-c777-76hp を
+      解消する最小バージョンとし、Node.js 18 をサポートする系列を選んだ（最新の 1.63.0 は Node.js 20 以上が必要で互換性影響が大きいため）。
+      本リポジトリが使う API（BrowserType.launchServer/connect、Page の $$・goto・screenshot・waitForEvent・bringToFront・
+      context・video・setDefaultTimeout、ElementHandle.click/type、Keyboard.insertText、Video/Download.saveAs）が
+      1.55.1 に存在することをプロトタイプで確認した。ブラウザバイナリは版ごとに異なるため、利用者は npx playwright install の
+      再実行が必要。実ブラウザでの動作確認は BL-019 の人手検証とした。dev依存の既存指摘は BL-021 へ起票した
+    変更ファイル:
+      - package.json
+      - package-lock.json
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+    検証コマンド: >-
+      npm ls playwright playwright-core / 使用APIのプロトタイプ存在確認（node -e） / plCore の読込確認 /
+      scratchpad のモック検証（node mock-test.js 全8件） / plCore スタブでのサンプル3ファイル実行 /
+      npx --no-install eslint index.js src / npx --no-install prettier --check index.js src /
+      npx markdownlint-cli2（品質ゲート定義のとおり） / 記録ファイルYAMLの safe_load / npm audit --omit=dev / npm audit
+    検証結果: >-
+      成功 - npm audit --omit=dev は0件。使用APIはすべて存在し、モック8件とスタブ実行（終了コード0）は成功。
+      ESLint・Prettier・記録YAMLは成功。Markdown は既存 README の38件のみ（BL-001で対応）。
+      npm audit（dev含む）は既存の6件（high 4件、BL-021で対応）
+    関連ID:
+      - BL-018
+      - BL-021
 - date: 2026-09-13 23:39
   summary: シナリオ実行中の例外でもページ・コンテキスト・ブラウザサーバーを閉じ、動画を保存してから終了コード1で終了する
   details:

@@ -5,6 +5,21 @@
 <!-- COPILOT_RECORDS:BEGIN -->
 <!-- markdownlint-disable-next-line MD041 -->
 ```yaml
+- id: BL-021
+  区分: 品質ゲート
+  タスク内容: >-
+    開発依存（ESLint 8 系の間接依存）の npm audit 指摘 6件（high 4件 ajv・brace-expansion・cross-spawn・minimatch 等、
+    moderate 2件）を、依存の削除・ダウングレードを伴わない範囲の更新で解消する
+  優先度: P3
+  状態: 未着手
+  担当: AIエージェント
+  完了条件: >-
+    npm audit（dev含む）の high 以上が0件、または残存分に更新不可の理由が記録されており、
+    品質ゲートの ESLint・Prettier が従来と同じ判定で成功する
+  依存: []
+  根拠: >-
+    2026-09-13の BL-018 対応中に npm audit（dev含む）で検出。品質ゲートの対象は --omit=dev で、開発端末でのみ
+    実行するツールの依存のため優先度はP3とした。ESLint 9 への移行は設定形式が変わるため本タスクの範囲外とする
 - id: BL-020
   区分: 品質ゲート
   タスク内容: DESIGN.md が空のため、本ループで修正した挙動を含む現行実装の再実装用プロンプト設計書を作成する
@@ -36,20 +51,6 @@
   依存:
     - BL-018
   根拠: 実ブラウザ起動と外部サイトへのアクセスを伴うため、CLAUDE.md の定義により自律ループ内で実行しない
-- id: BL-018
-  区分: 品質ゲート
-  タスク内容: playwright を npm audit の high（GHSA-7mvr-c777-76hp）が解消するバージョンへ更新する
-  優先度: P2
-  状態: 未着手
-  担当: AIエージェント
-  完了条件: >-
-    npm audit --omit=dev で playwright の指摘が0件になり、ESLint・Prettier が成功する。
-    実行確認は BL-019 へ分離する
-  依存:
-    - BL-002
-  根拠: >-
-    BL-002 から分割。1.29 系から 1.5x 系への追従で、ブラウザバイナリの再導入（npx playwright install）が必要になる。
-    ElementHandle.type などの非推奨APIは存続しているため、コードはそのままで動作する想定だが未確認であり、BL-019 で確認する
 - id: BL-017
   区分: 品質ゲート
   タスク内容: >-
