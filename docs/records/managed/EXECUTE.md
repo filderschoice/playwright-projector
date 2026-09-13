@@ -5,6 +5,33 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-09-14 00:31
+  summary: node:test による単体テスト基盤を追加し、npm test で plUtil のテストを実行できるようにした
+  details:
+    変更内容: >-
+      package.json の scripts.test をプレースホルダ（必ず失敗）から node --test "test/**/*.test.js" へ変更した。
+      依存パッケージは追加せず、Node.js 24 標準の node:test と node:assert/strict を使う。共通ヘルパー test/helpers/setup.js に
+      global.reqlib の初期化、src 配下をキャッシュから外して読み直す freshRequire（モジュールスコープの状態をテストごとに初期化）、
+      自動削除される一時ディレクトリ、setTimeout の即時化、console.log の取得を用意した。
+      test/utils/plUtil.test.js で実行経路の関数（isEmpty・isNotEmpty・isFunction・isObject・logInfo・logDebug・readYamlFile・
+      formatParseError・readFileSync・pathJoin）の31件を検証する。構文誤りのエラー表示にファイル内容（ダミーの資格情報）が
+      含まれないことも検証する。未使用関数は BL-014 の判断待ちのため対象外とした
+    変更ファイル:
+      - package.json
+      - test/helpers/setup.js
+      - test/utils/plUtil.test.js
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+    検証コマンド: >-
+      npm test / 一時的に失敗テストを置いた npm test（bash と PowerShell の双方で終了コード確認、確認後に削除） /
+      git check-ignore（test 配下が除外されないこと） / npx --no-install eslint index.js src test /
+      npx --no-install prettier --check index.js src test / npx markdownlint-cli2（品質ゲート定義のとおり） /
+      記録ファイルYAMLの safe_load / npm audit --omit=dev
+    検証結果: >-
+      成功 - npm test は31件成功で終了コード0、失敗テストがあると bash・PowerShell とも終了コード1。test 配下は Git 管理対象。
+      ESLint・Prettier（test を含む）・Markdown（0 issues）・記録YAMLは成功、npm audit --omit=dev は0件
+    関連ID:
+      - BL-028
 - date: 2026-09-14 00:30
   summary: input シナリオで非推奨の ElementHandle.type をやめ、ElementHandle.focus でフォーカスする
   details:
