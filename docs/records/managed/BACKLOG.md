@@ -5,19 +5,92 @@
 <!-- COPILOT_RECORDS:BEGIN -->
 <!-- markdownlint-disable-next-line MD041 -->
 ```yaml
+- id: BL-027
+  区分: 品質ゲート
+  タスク内容: >-
+    Node.js 24 前提で他の依存のメジャー更新（commander 9→15、js-yaml 4→5、eslint 8→9、prettier 2→3、
+    eslint-config-prettier 8→10）を行うか判断する
+  優先度: P3
+  状態: ブロック
+  担当: ユーザー
+  完了条件: 更新する依存と時期をユーザーが決定し、更新する場合は個別の実装タスクが起票されている
+  依存: []
+  根拠: >-
+    いずれも Node.js 24 上で現行版のまま動作し、品質ゲートも成功するため必須ではない。eslint 9 は flat config への移行と
+    CLAUDE.md の品質ゲート定義（ESLint 8 前提の注記）の変更を伴い、commander・js-yaml はCLI引数解釈とYAML読込の
+    互換性確認が必要な破壊的変更を含むため、今回の依頼範囲（Node.js 24 と playwright 最新化）の外として人の判断に委ねる
+- id: BL-026
+  区分: 品質ゲート
+  タスク内容: >-
+    playwright 1.63.0 で非推奨（@deprecated）の ElementHandle.type を input シナリオのフォーカス目的で使っているため、
+    非推奨でない ElementHandle.focus へ置き換える
+  優先度: P2
+  状態: 未着手
+  担当: AIエージェント
+  完了条件: >-
+    src/ 配下で非推奨APIを呼んでいない。input シナリオが従来どおり先頭要素へフォーカスしてから insertText することをモックで確認している
+  依存:
+    - BL-024
+  根拠: >-
+    type('') は空文字の入力でキー操作を行わず、実質はフォーカスのみのため focus() で挙動を維持できる。
+    page.$$（ElementHandle）は非推奨ではなく「推奨されない」扱いで、Locator への移行は待機・厳格モードの挙動が変わるため対象外とする
+- id: BL-025
+  区分: 不具合
+  タスク内容: >-
+    コンフィグの slowMo を BrowserType.launchServer へ渡しているが、launchServer は slowMo オプションを持たないため
+    無視されている（1.55.1 でも同様）。BrowserType.connect のオプションとして渡し、README の説明どおり操作を遅延させる
+  優先度: P2
+  状態: 未着手
+  担当: AIエージェント
+  完了条件: >-
+    connect に slowMo が渡り、launchServer には渡らないことをモックで確認している。未指定時の既定値（10ms）は維持している
+  依存:
+    - BL-024
+  根拠: >-
+    README の slowMo は「ブラウザ操作の遅延値」と記載されており、playwright の型定義では slowMo は launch と connect の
+    オプションである。記載どおりに動作させる修正で、既定値10msの遅延が実際に入るようになる影響は軽微と判断した
+- id: BL-024
+  区分: 品質ゲート
+  タスク内容: >-
+    playwright を 1.55.1 から最新の 1.63.0（Node.js 20 以上が必要）へ更新し、使用APIの存在と型定義上のオプションを確認する
+  優先度: P1
+  状態: 未着手
+  担当: AIエージェント
+  完了条件: >-
+    package.json の指定が ^1.63.0 で npm ls が 1.63.0 を示す。使用APIがすべて存在し、npm audit --omit=dev が0件、
+    モック検証が成功している。DESIGN.md・README・共通規約の playwright バージョン記載が更新されている
+  依存:
+    - BL-023
+- id: BL-023
+  区分: 品質ゲート
+  タスク内容: >-
+    Node.js 24（Active LTS）を前提環境として package.json の engines と .nvmrc で宣言し、Node.js 24 上で
+    非推奨警告を含めて依存と src/ が問題なく読み込めることを確認する。README と共通規約のNode.js要件を更新する
+  優先度: P1
+  状態: 未着手
+  担当: AIエージェント
+  完了条件: >-
+    engines.node が >=24、.nvmrc が 24。node --throw-deprecation でスタブ実行が成功する。
+    README_ja.md・README.md・.github/copilot-instructions.md・DESIGN.md のNode.js要件が24で一致している
+  依存: []
+  根拠: >-
+    engines は npm の engine-strict 未設定時は警告のみのため、既存利用者の npm ci は失敗しない。
+    上限を設けず >=24 としたのは、次のLTS（26）への追従時に宣言変更を不要にするため
 - id: BL-019
   区分: 人手検証
   タスク内容: >-
-    playwright 更新（BL-018）と不具合修正（BL-003〜BL-010）の後、npx playwright install でブラウザを導入し、
+    Node.js 24 と playwright 1.63.0 への更新（BL-023〜BL-026）の後、npx playwright install でブラウザを導入し、
     npm start でサンプルシナリオが完走すること、result/ss と result/videos に成果物が出ることを確認する
   優先度: P2
   状態: 未着手
   担当: ユーザー
   完了条件: >-
     chromium でサンプルシナリオが例外なく完走し、スクリーンショット連番と動画ファイルが保存される。
-    シナリオファイルの構文誤りを与えたとき終了コード1で停止する
+    slowMo を大きな値（例 500）にすると操作が遅くなる。シナリオファイルの構文誤りを与えたとき終了コード1で停止する
   依存:
-    - BL-018
+    - BL-024
+    - BL-025
+    - BL-026
   根拠: 実ブラウザ起動と外部サイトへのアクセスを伴うため、CLAUDE.md の定義により自律ループ内で実行しない
 - id: BL-016
   区分: 人手検証

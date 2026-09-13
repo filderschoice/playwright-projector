@@ -2,6 +2,15 @@
 
 このリポジトリの主要な変更は本ファイルに記録します。
 
+## 2026-09-13（自律ループによる Node.js 24・playwright 最新化の見直し）
+
+Node.js 24（Active LTS）と playwright 最新版（1.63.0）への更新を前提に、`index.js`・`src/`・設定・ドキュメントを見直し、
+対応タスクを `docs/records/managed/BACKLOG.md` へ起票しました。コード修正を伴う対応は `docs/records/managed/EXECUTE.md` に記録します。
+
+- `BACKLOG.md`: BL-023（Node.js 24 の宣言と非推奨警告の確認）、BL-024（playwright 1.63.0 への更新）、
+  BL-025（slowMo が launchServer へ渡され無視されている不具合）、BL-026（非推奨の ElementHandle.type の置き換え）、
+  BL-027（他依存のメジャー更新の判断、ブロック）を起票。人手検証 BL-019 を今回の更新対象へ合わせて更新
+
 ## 2026-09-13（自律ループによる全体レビュー）
 
 ソースコード（`index.js`・`src/`）と設定（lint・Prettier・`.gitignore`・`conf/*.sample.yaml`・`package.json`）を
