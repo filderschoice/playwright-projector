@@ -226,9 +226,9 @@ PlaywrightCores.getSsNumber = function () {
  * @return screenshot fileName
  */
 PlaywrightCores.mkSsFileName = function (baseFileName, number = 0, type = 'jpeg') {
-  // offset
+  // zero padding (at least 3 digits, no truncation over 999)
   let len = 3
-  return baseFileName + '_' + (Array(len).join('0') + number).slice(-len) + '.' + type
+  return baseFileName + '_' + String(number).padStart(len, '0') + '.' + type
 }
 
 /**
@@ -332,7 +332,8 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
       break
     case 'screenshot':
       // page.screenshot
-      const ssOption = plUtil.isNotEmpty(scenario.options) ? scenario.options : options.screenshot
+      // copy options so that the shared config is not modified
+      const ssOption = { ...(plUtil.isNotEmpty(scenario.options) ? scenario.options : options.screenshot) }
       ssOption.path = this.mkSsFileName(
         plUtil.pathJoin(ssOption.dir, this.ssFilename),
         this.getSsNumber(),
@@ -341,7 +342,7 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
       if (plUtil.isNotEmpty(scenario.pageIndex)) {
         let wkContext = await operatePage.context()
         let wkPage = await PlaywrightCores.getOperatePage(wkContext, scenario.pageIndex)
-        wkPage.screenshot(ssOption)
+        await wkPage.screenshot(ssOption)
       } else {
         await operatePage.screenshot(ssOption)
       }
