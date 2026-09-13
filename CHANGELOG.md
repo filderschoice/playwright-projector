@@ -2,6 +2,14 @@
 
 このリポジトリの主要な変更は本ファイルに記録します。
 
+## 2026-09-14（自律ループによる単体テストの品質ゲート化）
+
+既存機能を最低限網羅する単体テストを追加し、品質ゲートと更新規約へ組み込むためのタスクを
+`docs/records/managed/BACKLOG.md` へ起票しました。コード修正を伴う対応は `docs/records/managed/EXECUTE.md` に記録します。
+
+- `BACKLOG.md`: BL-028（テスト基盤と plUtil）、BL-029（plCore）、BL-030（runPlaywright）、BL-031（index.js）、
+  BL-032（README・サンプルとの整合）、BL-033（品質ゲート定義と規約の更新）、BL-034（CI 導入の判断、ブロック）を起票
+
 ## 2026-09-13（自律ループによる Node.js 24・playwright 最新化の見直し）
 
 Node.js 24（Active LTS）と playwright 最新版（1.63.0）への更新を前提に、`index.js`・`src/`・設定・ドキュメントを見直し、

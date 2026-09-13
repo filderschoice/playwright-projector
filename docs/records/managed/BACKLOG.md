@@ -5,6 +5,102 @@
 <!-- COPILOT_RECORDS:BEGIN -->
 <!-- markdownlint-disable-next-line MD041 -->
 ```yaml
+- id: BL-034
+  区分: 品質ゲート
+  タスク内容: >-
+    npm test を含む品質ゲートをプルリクエストごとに自動実行する CI（GitHub Actions 等）を導入するか判断する
+  優先度: P3
+  状態: ブロック
+  担当: ユーザー
+  完了条件: CI を導入するかをユーザーが決定し、導入する場合はワークフロー定義を人が作成・レビューしている
+  依存: []
+  根拠: >-
+    本リポジトリには CI が無く、テストはローカル実行に依存する。CI/CD 定義の変更は guardrails 12.2 で自律ループ内の実施が
+    禁止されているため、ループでは起票のみとする
+- id: BL-033
+  区分: 品質ゲート
+  タスク内容: >-
+    単体テストを品質ゲートと更新規約へ組み込む。CLAUDE.md の品質ゲート定義に npm test を追加し、ESLint・Prettier の対象へ
+    test を加える。共通規約・CONTRIBUTING.md・DESIGN.md の「自動テストは存在しない」を改め、挙動を変える変更ではテストを
+    追加・更新することを規約化する
+  優先度: P1
+  状態: 未着手
+  担当: AIエージェント
+  完了条件: >-
+    品質ゲート定義に単体テスト（npm test、終了コード0）があり、ESLint・Prettier のコマンドが test を含む。
+    共通規約・CONTRIBUTING.md・DESIGN.md にテストの配置・実行方法・更新規約が記載され、「自動テストは存在しない」の記述が残っていない
+  依存:
+    - BL-029
+    - BL-030
+    - BL-031
+    - BL-032
+- id: BL-032
+  区分: 品質ゲート
+  タスク内容: >-
+    ドキュメント整合テストを追加する。plCore.execOperationPage のシナリオ種別（case ラベル）と README_ja.md・README.md の
+    Scenario Type 表、conf/plScenarios.sample.yaml の種別が一致すること、サンプル3ファイルが読み込めることを検証する
+  優先度: P2
+  状態: 未着手
+  担当: AIエージェント
+  完了条件: 種別の追加・削除時に README またはサンプルの更新漏れがあればテストが失敗する
+  依存:
+    - BL-028
+  根拠: >-
+    共通規約の「種別を追加・変更したら両 README の表とサンプルを同時に更新する」を機械的に検出するため。
+    サンプルに意図的に含まれる未知種別 dummy は、黙って無視される挙動の例として許容リストで扱う
+- id: BL-031
+  区分: 品質ゲート
+  タスク内容: >-
+    index.js の単体テストを追加する。runPlaywright をスタブへ差し替えた子プロセスで CLI を実行し、既定パスとオプション指定、
+    設定マージ（Auth 優先）、読込失敗時の終了コードと出力（ファイル内容を出さない）、実行時例外の終了コード1を検証する
+  優先度: P1
+  状態: 未着手
+  担当: AIエージェント
+  完了条件: DESIGN.md の FR-01〜FR-03 と FR-10 の例外時終了コードをテストで網羅し、npm test が成功する
+  依存:
+    - BL-028
+- id: BL-030
+  区分: 品質ゲート
+  タスク内容: >-
+    src/runPlaywright.js の単体テストを追加する。plCore をモックへ差し替え、起動から終了までの呼び出し順・引数、
+    page パラメータ設定、シナリオの逐次実行、例外時の後始末（page・context の close、動画保存、サーバー close）と
+    後始末失敗時に元の例外を隠さないことを検証する
+  優先度: P1
+  状態: 未着手
+  担当: AIエージェント
+  完了条件: DESIGN.md の FR-04・FR-06（page.timeout）・FR-07・FR-10 をテストで網羅し、npm test が成功する
+  依存:
+    - BL-028
+- id: BL-029
+  区分: 品質ゲート
+  タスク内容: >-
+    src/core/plCore.js の単体テストを追加する。Page・Context・BrowserType のモックで、ブラウザ種別選択、起動引数、
+    launchServer・connect・newContext のオプション、getOperatePage、スクリーンショット連番とファイル名、
+    execOperationPage の全シナリオ種別（goto・input・submit・wait・screenshot・conditions・pageChange・page.operator・未知種別）を検証する
+  優先度: P1
+  状態: 未着手
+  担当: AIエージェント
+  完了条件: DESIGN.md の FR-04〜FR-06・FR-08・FR-09 をテストで網羅し、npm test が成功する
+  依存:
+    - BL-028
+- id: BL-028
+  区分: 品質ゲート
+  タスク内容: >-
+    単体テストの基盤を追加する。Node.js 24 標準の node:test と node:assert を使い（依存追加なし）、npm test を
+    test 配下の *.test.js を実行するよう変更し、reqlib の初期化などの共通ヘルパーを用意する。
+    あわせて src/utils/plUtil.js のうち実行経路で使う関数（isEmpty 系・readYamlFile・readFileSync・formatParseError・
+    logOutput・pathJoin）のテストを追加する
+  優先度: P1
+  状態: 未着手
+  担当: AIエージェント
+  完了条件: >-
+    npm test がブラウザ導入・外部通信なしで成功し、失敗するテストがあれば終了コードが非0になる。
+    テストコードが ESLint・Prettier を通過する
+  依存: []
+  根拠: >-
+    テストフレームワークは既定値として node:test を選んだ。Node.js 24 を前提環境としたため標準で利用でき、依存パッケージの
+    追加（供給網リスクと npm audit 対象の増加）が不要なため。@playwright/test は実ブラウザ前提で、本リポジトリのロジックの
+    単体テストには過大。未使用関数（BL-014 で削除判断待ち）はテスト対象外とする
 - id: BL-027
   区分: 品質ゲート
   タスク内容: >-
