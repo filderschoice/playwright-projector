@@ -5,6 +5,29 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-09-14 00:30
+  summary: input シナリオで非推奨の ElementHandle.type をやめ、ElementHandle.focus でフォーカスする
+  details:
+    変更内容: >-
+      plCore.execOperationPage の input で、先頭要素へのフォーカス目的に呼んでいた inputSelector[0].type('') を
+      inputSelector[0].focus() へ置き換えた。playwright 1.63.0 の型定義で ElementHandle.type は @deprecated で、
+      空文字の type は要素へフォーカスするだけでキー入力を行わないため、フォーカス後に keyboard.insertText する挙動は維持される。
+      page.$$ は非推奨ではないため維持し、Locator への移行は待機・厳格モードの挙動が変わるため行わない（DESIGN.md へ明記）。
+      人手検証 BL-019 の完了条件へ input の入力確認を追加した
+    変更ファイル:
+      - src/core/plCore.js
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/DESIGN.md
+      - docs/records/managed/EXECUTE.md
+    検証コマンド: >-
+      node mock-test.js（scratchpad。修正前は BL-026 の1件失敗、修正後は全6件成功） / src 配下の .type( 呼び出しの grep /
+      npx --no-install eslint index.js src / npx --no-install prettier --check index.js src /
+      npx markdownlint-cli2（品質ゲート定義のとおり） / 記録ファイルYAMLの safe_load / npm audit --omit=dev
+    検証結果: >-
+      成功 - input で type が呼ばれず、focus の後に insertText が呼ばれることを確認。src 配下に .type( の呼び出しは無い。
+      ESLint・Prettier・Markdown（0 issues）・記録YAMLは成功、npm audit --omit=dev は0件。実ブラウザでの入力確認は BL-019 に含める
+    関連ID:
+      - BL-026
 - date: 2026-09-14 00:20
   summary: コンフィグの slowMo が launchServer へ渡され無視されていた不具合を修正し、connect のオプションとして渡す
   details:

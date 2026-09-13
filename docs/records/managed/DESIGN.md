@@ -45,7 +45,9 @@
   各シナリオの後に1秒待つ。`type` が空のシナリオと未知の `type` は何もしない（黙って無視）。
 - FR-08 シナリオ種別（`plCore.execOperationPage`。操作対象は `PlaywrightCores.userPage`、初回は初期ページ）:
   - `goto`: `page.goto(url)`。
-  - `input`: `$$(selector)` の先頭要素へ `type('')` でフォーカスし、`keyboard.insertText(value)`。要素が無ければ何もしない。
+  - `input`: `$$(selector)` の先頭要素へ `focus()` でフォーカスし、`keyboard.insertText(value)`。要素が無ければ何もしない。
+    非推奨の `ElementHandle.type` は使わない。`page.$$`（ElementHandle）は非推奨ではなく「推奨されない」扱いで、
+    Locator への移行は待機・厳格モードの挙動が変わるため行っていない。
   - `submit`: `$$(selector)` の先頭要素を click。要素が無ければ何もしない。
   - `wait`: `time` ミリ秒待つ。
   - `screenshot`: `options`（シナリオ）があればそれを、無ければコンフィグの `screenshot` を**複製**して `path` を付与し保存。

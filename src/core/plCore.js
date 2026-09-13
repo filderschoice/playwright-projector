@@ -311,8 +311,8 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
       // check selector
       let inputSelector = await operatePage.$$(scenario.selector)
       if (plUtil.isNotEmpty(inputSelector)) {
-        // exist selector: type/insertText
-        await inputSelector[0].type('')
+        // exist selector: focus/insertText (ElementHandle.type is deprecated)
+        await inputSelector[0].focus()
         await operatePage.keyboard.insertText(scenario.value)
       }
       break
