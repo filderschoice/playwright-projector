@@ -106,30 +106,70 @@ plUtil.replaceFilePath2Unix = function (filePath) {
 }
 
 plUtil.readFileSync = function (filePath, type = 'json', option = {}) {
-  let ret = option
-  if (!filePath) {
+  if (!filePath || !fs.existsSync(filePath)) {
     // cannot read file: option
-    return ret
+    return option
   }
-  if (fs.existsSync(filePath)) {
-    ret = fs.readFileSync(filePath, 'utf-8')
+  if (type === 'yaml') {
+    // read yaml file: YAML2JSON
+    const result = plUtil.readYamlFile(filePath)
+    if (result.error) {
+      // parse error: option
+      console.log(plUtil.formatParseError(result.error))
+      return option
+    }
+    return result.data === undefined ? option : result.data
+  }
+  let ret = fs.readFileSync(filePath, 'utf-8')
+  if (type === 'json') {
     try {
-      if (type === 'json') {
-        // read json file: JSON parse
-        ret = JSON.parse(ret)
-      } else if (type === 'yaml') {
-        // read yaml file: YAML2JSON
-        ret = JSON.stringify(yaml.load(ret))
-        // JSON parse
-        ret = JSON.parse(ret)
-      } else {
-        // other: option
-      }
+      // read json file: JSON parse
+      ret = JSON.parse(ret)
     } catch (e) {
-      console.log(e)
+      // parse error: option
+      console.log(plUtil.formatParseError(e))
+      ret = option
     }
   }
   return ret
+}
+
+/**
+ * Read YAML file
+ * @param filePath File Path
+ * @returns { exists, data, error } data is undefined when the file is missing, empty or broken
+ */
+plUtil.readYamlFile = function (filePath) {
+  const result = { exists: false, data: undefined, error: undefined }
+  if (!filePath || !fs.existsSync(filePath)) {
+    // not exist file
+    return result
+  }
+  result.exists = true
+  try {
+    const data = yaml.load(fs.readFileSync(filePath, 'utf-8'))
+    if (data !== undefined && data !== null) {
+      // YAML2JSON
+      result.data = JSON.parse(JSON.stringify(data))
+    }
+  } catch (e) {
+    result.error = e
+  }
+  return result
+}
+
+/**
+ * Format parse error without file contents
+ * (YAMLException.message contains a snippet of the file, which may include credentials)
+ * @param error Error
+ * @returns message
+ */
+plUtil.formatParseError = function (error) {
+  let msg = (error && (error.reason || error.name)) || 'parse error'
+  if (error && error.mark) {
+    msg += ' (line ' + (error.mark.line + 1) + ', column ' + (error.mark.column + 1) + ')'
+  }
+  return msg
 }
 
 plUtil.writeFileSync = function (filePath, fileData) {

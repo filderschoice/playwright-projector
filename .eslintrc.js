@@ -6,9 +6,12 @@ module.exports = {
     node: true,
   },
   parserOptions: {
-    requireConfigFile: false,
-    sourceType: "module",
+    sourceType: "script",
     ecmaVersion: 12,
+  },
+  globals: {
+    // index.js で定義する app-root-path の require
+    reqlib: "readonly",
   },
   plugins: [],
   extends: ["eslint:recommended", "prettier"],
@@ -18,6 +21,5 @@ module.exports = {
     "no-console": process.env.NODE_ENV === "production" ? "error" : "off",
     "no-redeclare": "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off",
-    "no-undef": "off"
   },
 };

@@ -15,23 +15,69 @@ cmd
   .parse(process.argv)
 const option = cmd.opts()
 
+/**
+ * Load YAML file
+ * @param filePath File Path
+ * @param label File Label(for log)
+ * @param expect Expected data type('array'/'object')
+ * @param required true: missing file is an error
+ * @returns data (undefined: load error)
+ */
+const loadYaml = function (filePath, label, expect, required) {
+  const result = plUtil.readYamlFile(filePath)
+  if (result.error) {
+    // parse error (file contents are not logged)
+    plUtil.logInfo('[ERROR] ' + label + ' file cannot be parsed: ' + filePath)
+    plUtil.logInfo('  - ' + plUtil.formatParseError(result.error))
+    return undefined
+  }
+  if (result.data === undefined) {
+    if (required) {
+      // missing or empty required file
+      plUtil.logInfo('[ERROR] ' + label + ' file is not found or empty: ' + filePath)
+      return undefined
+    }
+    if (!result.exists && label === 'config') {
+      // missing config: continue with default values
+      plUtil.logInfo('[WARN] ' + label + ' file is not found: ' + filePath)
+    }
+    return expect === 'array' ? [] : {}
+  }
+  const isValid = expect === 'array' ? Array.isArray(result.data) : plUtil.isObject(result.data)
+  if (!isValid) {
+    plUtil.logInfo('[ERROR] ' + label + ' file must be a YAML ' + expect + ': ' + filePath)
+    return undefined
+  }
+  return result.data
+}
+
 plUtil.logInfo('playwright-projector start')
 plUtil.logInfo('  - config: ' + option.config)
 plUtil.logInfo('  - auth: ' + option.auth)
 plUtil.logInfo('  - scenario: ' + option.scenario)
 // Scenario Read
-const plScenarios = plUtil.readFileSync(option.scenario, 'yaml')
+const plScenarios = loadYaml(option.scenario, 'scenario', 'array', true)
 // Config Read
-const plConfig = plUtil.readFileSync(option.config, 'yaml')
+const plConfig = loadYaml(option.config, 'config', 'object', false)
 // Auth Read
-const plAuth = plUtil.readFileSync(option.auth, 'yaml')
-// Option Merge
-const plOption = { ...plConfig, ...plAuth }
+const plAuth = loadYaml(option.auth, 'auth', 'object', false)
 
 // main
 const main = async function () {
+  if (plScenarios === undefined || plConfig === undefined || plAuth === undefined) {
+    // load error: exit without launching browser
+    process.exitCode = 1
+    return
+  }
+  // Option Merge
+  const plOption = { ...plConfig, ...plAuth }
   await runPl.exec(plScenarios, plOption)
 }
 
 // exec main
-main()
+main().catch((e) => {
+  // runtime error: output error and exit code 1
+  plUtil.logInfo('[ERROR] playwright-projector failed')
+  plUtil.logInfo(e && e.stack ? e.stack : String(e))
+  process.exitCode = 1
+})

@@ -60,9 +60,10 @@ PlaywrightCores.setBrowserType = function (type = 'chromium') {
  * @param proxyInfo Proxy Info
  */
 PlaywrightCores.getArgs = function (proxyInfo = []) {
-  let ret = PlaywrightCores.browserArgs
+  // copy args so that the module variable is not modified
+  let ret = [...PlaywrightCores.browserArgs]
   // Set Proxy
-  if (proxyInfo.length == 0) {
+  if (plUtil.isEmpty(proxyInfo)) {
     // No Proxy
     ret.push('--no-proxy-server')
   } else {
@@ -194,7 +195,7 @@ PlaywrightCores.getOperatePage = async function (context, pageIndex = -1) {
     } else {
       for (let idx = 0; idx < pages.length; idx++) {
         const wkPage = pages[idx]
-        if (wkPage.url() !== 'about:brank') {
+        if (wkPage.url() !== 'about:blank') {
           // get operation page
           usePageIdx = idx
           break
@@ -226,9 +227,9 @@ PlaywrightCores.getSsNumber = function () {
  * @return screenshot fileName
  */
 PlaywrightCores.mkSsFileName = function (baseFileName, number = 0, type = 'jpeg') {
-  // offset
+  // zero padding (at least 3 digits, no truncation over 999)
   let len = 3
-  return baseFileName + '_' + (Array(len).join('0') + number).slice(-len) + '.' + type
+  return baseFileName + '_' + String(number).padStart(len, '0') + '.' + type
 }
 
 /**
@@ -256,26 +257,20 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
         context = await operatePage.context()
       }
       PlaywrightCores.userPage = await PlaywrightCores.getOperatePage(context, scenario.pageIndex)
-      await operatePage.bringToFront()
+      // bring the switched page to front
+      await PlaywrightCores.userPage.bringToFront()
       break
     case 'page.operator':
       // page operate wrapper
       if (plUtil.isNotEmpty(operatePage[scenario.subType]) && plUtil.isFunction(operatePage[scenario.subType])) {
         // exec page api
-        let ret
         let args = undefined
         if (plUtil.isNotEmpty(scenario.args) && plUtil.isObject(scenario.args)) {
           // setup args
           args = scenario.args
         }
-
-        if (plUtil.getObjectType(operatePage[scenario.subType]).indexOf('async') != -1) {
-          // async
-          ret = await operatePage[scenario.subType](args)
-        } else {
-          // normal
-          ret = operatePage[scenario.subType](args)
-        }
+        // always await: resolves Promise-returning APIs regardless of async/normal function (normal values are unchanged)
+        const ret = await operatePage[scenario.subType](args)
         // user stack
         if (scenario.isStack) {
           PlaywrightCores.user[scenario.subType] = ret
@@ -288,20 +283,19 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
       switch (scenario.subType) {
         case 'click':
           condSelector = await operatePage.$$(scenario.selector)
-          if (plUtil.isNotEmpty(condSelector) && scenario.selectorIndex <= condSelector.length) {
+          if (plUtil.isNotEmpty(condSelector) && scenario.selectorIndex < condSelector.length) {
             // exist selector: click
             await condSelector[scenario.selectorIndex].click()
           }
           break
         case 'download':
-          // Start waiting for download before clicking. Note no await.
-          const dlPromise = operatePage.waitForEvent('download')
           condSelector = await operatePage.$$(scenario.selector)
-          if (plUtil.isNotEmpty(condSelector) && scenario.selectorIndex <= condSelector.length) {
-            // exist selector: click
-            await condSelector[scenario.selectorIndex].click()
-            // wait download
-            const download = await dlPromise
+          if (plUtil.isNotEmpty(condSelector) && scenario.selectorIndex < condSelector.length) {
+            // start waiting for download before clicking (only when the click happens)
+            const [download] = await Promise.all([
+              operatePage.waitForEvent('download'),
+              condSelector[scenario.selectorIndex].click()
+            ])
             // save downloaded file
             await download.saveAs(scenario.savePath)
           }
@@ -333,7 +327,8 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
       break
     case 'screenshot':
       // page.screenshot
-      const ssOption = plUtil.isNotEmpty(scenario.options) ? scenario.options : options.screenshot
+      // copy options so that the shared config is not modified
+      const ssOption = { ...(plUtil.isNotEmpty(scenario.options) ? scenario.options : options.screenshot) }
       ssOption.path = this.mkSsFileName(
         plUtil.pathJoin(ssOption.dir, this.ssFilename),
         this.getSsNumber(),
@@ -342,7 +337,7 @@ PlaywrightCores.execOperationPage = async function (page, scenario, options) {
       if (plUtil.isNotEmpty(scenario.pageIndex)) {
         let wkContext = await operatePage.context()
         let wkPage = await PlaywrightCores.getOperatePage(wkContext, scenario.pageIndex)
-        wkPage.screenshot(ssOption)
+        await wkPage.screenshot(ssOption)
       } else {
         await operatePage.screenshot(ssOption)
       }

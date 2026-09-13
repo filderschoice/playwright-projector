@@ -1,10 +1,15 @@
 # User
 result/ss/*
 result/videos/*
-conf/plConfig.yaml
-conf/plScenarios.yaml
+# conf: 実ファイル（認証情報を含み得る）は除外し、サンプルのみ追跡する
+conf/*.yaml
+conf/*.yml
+!conf/*.sample.yaml
 conf/custom/*yaml
-conf/auth/plAuth.yaml
+conf/custom/*yml
+conf/auth/*.yaml
+conf/auth/*.yml
+!conf/auth/*.sample.yaml
 .vscode/*
 
 # Logs

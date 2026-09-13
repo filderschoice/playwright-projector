@@ -2,6 +2,37 @@
 
 このリポジトリの主要な変更は本ファイルに記録します。
 
+## 2026-09-13（自律ループによる全体レビュー）
+
+ソースコード（`index.js`・`src/`）と設定（lint・Prettier・`.gitignore`・`conf/*.sample.yaml`・`package.json`）を
+全体レビューし、指摘事項を `docs/records/managed/BACKLOG.md` へ起票しました。コード修正を伴う対応は
+`docs/records/managed/EXECUTE.md` に記録します。
+
+- `BACKLOG.md`: レビュー指摘として BL-003〜BL-020 を起票（不具合8件、品質ゲート6件、人手検証3件、要確認1件、
+  ブロック1件）。既存の BL-002 を js-yaml（BL-002）と playwright（BL-018、実行確認は BL-019）に分割
+- `.gitignore`（BL-012）: `conf/` 直下・`conf/auth/`・`conf/custom/` の `*.yaml` / `*.yml` をサンプル（`*.sample.yaml`）以外
+  すべて除外するよう拡大。`-a` / `-c` で別名の認証ファイルを使った場合もコミット対象にならない。
+  検証は `git check-ignore --no-index`（別名6件が除外、サンプル3件と `.gitkeep` が追跡可能）と
+  `git ls-files -ci --exclude-standard conf`（除外に該当する追跡済みファイルが0件）で実施
+- `README.md` / `README_ja.md`（BL-001）: markdownlint の既存指摘38件を解消（長い行の折り返し、コードブロックの言語指定、
+  見出し末尾の句読点、`README.md` の `# # Installation` を `## Installation` へ修正、区切り行の列数が合わず表として
+  解釈されていなかったコンフィグパラメータ表の修正）。記載内容は変更していない。Markdown 静的解析が `Summary: 0 issues` になった
+- `.eslintrc.js` / `.prettierrc.js`（BL-011）: `no-undef` の無効化をやめ、`reqlib` を読み取り専用の globals として宣言。
+  CommonJS に合わせ `sourceType` を `script` にし、Babel 用で効果のない `requireConfigFile` を削除。Prettier が警告していた
+  未知オプション `skipStrings` を削除。検証は `eslint --print-config`（no-undef が error）、未定義変数を含む一時ファイルで
+  no-undef が検出されること（確認後に削除）、既存コードで ESLint・Prettier が警告なしで成功すること
+- `README.md` / `README_ja.md`（BL-017）: 記載と実装の乖離を修正。パラメータ名 `local` を `locale` へ、`timeout` の説明を
+  「ブラウザ起動を待つタイムアウト値」へ（`launchServer` の `timeout` に渡しているため）、Scenario Type 表の `screenshot` に
+  任意パラメータ `pageIndex` / `options` を追記、シナリオファイル名の誤記と実行ログ例のバージョン・`args` を修正。
+  playwright 1.55.1 は `npm ci` 時にブラウザを自動導入しない（1.29.1 は install script で導入していた）ため、
+  インストール手順へ `npx playwright install` を追加。BL-008 / BL-010 で定めたエラー時の動作（終了コード1）の節を追加。
+  `download` の `savePath` は既に記載済みだったため変更なし（起票時の記述誤り）
+- `docs/records/managed/DESIGN.md`（BL-020）: 空だった設計書を、本ループで修正した挙動を含む現行実装に合わせて作成
+  （機能要件 FR-01〜FR-10、3層構成と `reqlib` の制約、モジュールスコープの状態、非機能要件、ブラウザを起動しない検証方法）
+- `.github/copilot-instructions.md`（BL-022）: 「本リポジトリの前提」のセットアップ手順へ `npx playwright install` と
+  playwright 1.55.1 の Node.js 要件（18 以上）を追記。BL-018 の依存更新で `npm ci` だけではブラウザが導入されなくなったための
+  事実の追従で、規範（禁止事項・承認要件）の変更はない
+
 ## 2026-09-13（エージェント指示の本リポジトリ向け最適化）
 
 規範（禁止事項・承認要件）そのものの追加・削除はありません。配布元テンプレート由来の記述を本リポジトリの実態へ合わせ、

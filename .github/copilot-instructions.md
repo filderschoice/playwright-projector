@@ -49,7 +49,8 @@ playwright-projector は、Browser / Context を意識せず Page 操作をYAML�
 
 ### コマンド
 
-- セットアップ: `npm ci`（Node.js 前提。バージョン要件は未定義）
+- セットアップ: `npm ci` の後に `npx playwright install`（playwright 1.55 系はブラウザを自動導入しない。
+  Node.js のバージョン要件はリポジトリとして未定義で、playwright 1.55.1 は 18 以上を要求する）
 - 実行: `npm start`（`node index.js`。既定で `conf/plConfig.yaml`・`conf/plScenarios.yaml`・`conf/auth/plAuth.yaml` を読む）
 - 品質ゲートのコマンドは `CLAUDE.md`「本リポジトリの品質ゲート定義」が正本
 
