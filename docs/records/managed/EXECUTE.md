@@ -5,6 +5,30 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-09-14 00:36
+  summary: runPlaywright の単体テスト8件を追加し、起動から終了までの流れと例外時の後始末を網羅した
+  details:
+    変更内容: >-
+      test/runPlaywright.test.js で plCore の各関数をモックへ差し替え、正常系（呼び出し順、getArgs・setBrowserType・launchServer・
+      connectBrowser（slowMo）・newContext・setPageParameter・execOperationPage への引数、各シナリオ後の1秒待機、
+      動画の保存先 result/videos/<file>.webm、開始・終了ログ）、シナリオ・page・video が無い場合、引数省略時と、
+      異常系（シナリオ例外時の後始末順と例外の再送出、後始末失敗時の [WARN] と元の例外の保持、正常終了時の後始末失敗、
+      接続失敗時はサーバーのみ閉じること、launchServer 失敗時）を検証する。シナリオの逐次実行は、非同期に完了する
+      モックで前のシナリオの完了後に次が始まることを確認する
+    変更ファイル:
+      - test/runPlaywright.test.js
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+    検証コマンド: >-
+      npm test / 変異テスト（runPlaywright.js へ slowMo の渡し漏れ・後始末の保護の除去・シナリオの await 漏れを一時的に注入し、
+      挙動を変えない変更を対照として npm test、各回後に git checkout で復元） /
+      npx --no-install eslint index.js src test / npx --no-install prettier --check index.js src test /
+      npx markdownlint-cli2（品質ゲート定義のとおり） / 記録ファイルYAMLの safe_load / npm audit --omit=dev
+    検証結果: >-
+      成功 - npm test は78件成功。変異3種は1〜3件のテストが失敗して検出でき、対照は失敗0件、復元後の src に差分は無い。
+      ESLint・Prettier・Markdown（0 issues）・記録YAMLは成功、npm audit --omit=dev は0件
+    関連ID:
+      - BL-030
 - date: 2026-09-14 00:34
   summary: plCore の単体テスト39件を Playwright のモックで追加し、全シナリオ種別と起動・コンテキスト設定を網羅した
   details:
