@@ -98,21 +98,16 @@ AIエージェントが人の応答を待たずに複数イテレーションを
 
 ## Markdownlintのローカル実行
 
-`.github/workflows/markdown-quality.yml.disabled` は拡張子が `.disabled` のため GitHub Actions に認識されず、
-自動実行されません（2026-08-11に意図的に無効化。再有効化する場合は `.yml` へリネーム）。
-CIでの自動チェックが無いため、プルリクエスト作成前に以下をローカル実行して指摘を解消してください。
-
-```bash
-npx markdownlint-cli2 "**/*.md"
-```
+本リポジトリには GitHub Actions のワークフローが無く、CIでの自動チェックはありません。
+プルリクエスト作成前に、`CLAUDE.md`「本リポジトリの品質ゲート定義」のコマンド（Markdownlint を含む）を
+ローカル実行して指摘を解消してください。
 
 - 設定 `.markdownlint-cli2.yaml` はカレントディレクトリから自動読み込みされます。
-  明示指定する場合は `--config ".markdownlint-cli2.yaml"` を付けます。
 - Node.js / npx が利用できる環境が前提です。
-- VS Code 利用者は拡張機能 `DavidAnson.vscode-markdownlint`（`.vscode/extensions.json` で推奨、
-  `.vscode/settings.json` で保存時実行を設定済み）でも確認できますが、CLI実行結果が最終判定です。
-- リンク切れチェック（CIの `lychee-action`）のローカル実行手順は本リポジトリでは未定義です（未確認）。
-  確認する場合は [lychee](https://github.com/lycheeverse/lychee) を別途インストールし `lychee "**/*.md"` を実行します。
+- VS Code 拡張機能 `DavidAnson.vscode-markdownlint` でも確認できますが、`.vscode/` は `.gitignore` 対象のため
+  設定は各自で行います。CLI実行結果が最終判定です。
+- リンク切れチェックのローカル実行手順は未定義です（未確認）。確認する場合は
+  [lychee](https://github.com/lycheeverse/lychee) を別途インストールし `lychee "**/*.md"` を実行します。
 
 ## ルール記述スタイル
 

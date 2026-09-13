@@ -17,11 +17,11 @@
 | ドキュメント | 内容 | 読むタイミング |
 | --- | --- | --- |
 | `rules/guardrails-unified.v1.md` | セキュリティ・プライバシー・統制の正本 | 常時（統制判断の根拠） |
+| `README_ja.md` / `README.md` | コンフィグ・シナリオ・Authファイルの利用者向け仕様（パラメータ表・Scenario Type表） | 設定キーやシナリオ種別を追加・変更する時 |
 | `CONTRIBUTING.md` | 規定ブランチ定義、ブランチ・コミット規約、レビュー要件 | ブランチ作成時・PR作成時 |
 | `docs/records/spec/FORMAT.md` | 記録ファイルの記述仕様（唯一の参照元） | 記録ファイル更新時 |
 | `.github/instructions/pr.instructions.md` | PR説明文・コードレビューの言語と構成（正本） | PR説明文・レビュー生成時 |
-| `docs/guidelines/RULE.md` | 複数プロジェクト共通の汎用フレームワーク | 他リポジトリへ導入・移行する時 |
-| `docs/guidelines/ADOPTION.md` | 導入・移行・日常運用の手順 | 同上 |
+| `docs/guidelines/RULE.md` / `ADOPTION.md` | 複数プロジェクト共通の汎用フレームワーク / 導入・移行・日常運用の手順 | 他リポジトリへ導入・移行する時 |
 
 ## 指示参照の優先順位
 
@@ -33,8 +33,44 @@
 
 矛盾した場合は、常に上位を優先します。
 
-なお guardrails のセクション11「開発プロセス統制」は欠番です。開発プロセス・ブランチ管理は
-`CONTRIBUTING.md` が正本です。
+## 本リポジトリの前提（MUST）
+
+playwright-projector は、Browser / Context を意識せず Page 操作をYAMLで宣言的に実行する Node.js 製CLIです。
+
+### 構成（入口のみ。網羅リストではない）
+
+| パス | 役割 |
+| --- | --- |
+| `index.js` | CLI入口。commander で `-c` / `-s` / `-a` を受け、YAMLを読み込んで `runPlaywright.exec` を呼ぶ |
+| `src/runPlaywright.js` | ブラウザ起動からシナリオの逐次実行・終了（動画保存）までの流れ |
+| `src/core/plCore.js` | Playwright 操作の本体。シナリオ種別は `execOperationPage` の `switch` で分岐する |
+| `src/utils/plUtil.js` | ログ出力・ファイル入出力・空判定などの汎用関数 |
+| `conf/*.sample.yaml` | コンフィグ・シナリオ・Authのサンプル（実ファイルはコピーして作成し、Git管理外） |
+
+### コマンド
+
+- セットアップ: `npm ci`（Node.js 前提。バージョン要件は未定義）
+- 実行: `npm start`（`node index.js`。既定で `conf/plConfig.yaml`・`conf/plScenarios.yaml`・`conf/auth/plAuth.yaml` を読む）
+- 品質ゲートのコマンドは `CLAUDE.md`「本リポジトリの品質ゲート定義」が正本
+
+### 変更時の制約
+
+- **モジュール解決**: CommonJS。`index.js` が `global.reqlib`（app-root-path）を定義し、`src/` 配下は
+  `reqlib('/src/...')` で相互参照する。`src/` のファイルを単体で `require` すると `reqlib` 未定義で失敗する。
+- **コードスタイル**: `.prettierrc.js`（セミコロンなし・シングルクォート・120桁・末尾カンマなし）と
+  `.eslintrc.js`（ESLint 8 形式）に従う。
+- **状態はモジュールスコープ**: `plCore.js` は操作中ページ・`isStack` の保持値・スクリーンショット連番・
+  ブラウザ引数（`getArgs` が配列へ追記する）をモジュール変数で持つ。1プロセス1実行を前提とし、再実行や並列化を
+  導入する場合はこれらの初期化を設計に含める。
+- **未知のシナリオ種別は黙って無視される**（`switch` の `default`）。種別やパラメータを追加・変更したら、
+  `README_ja.md` と `README.md` の Scenario Type 表、`conf/plScenarios.sample.yaml` を同時に更新する。
+- **設定のマージ**: `{ ...plConfig, ...plAuth }` の浅いマージで、Authファイル側が優先される。設定キーを
+  追加・変更したら両READMEのパラメータ表と `conf/*.sample.yaml` を同時に更新する。
+- **秘密情報**: `conf/auth/plAuth.yaml` は認証情報を持つ。実ファイル（`.gitignore` 対象の `conf/*.yaml`・
+  `conf/custom/*yaml`）を読み取り・再掲・コミットしない。サンプルにはダミー値のみを置く。
+- **外部通信と成果物**: `npm start` は実ブラウザを起動し、シナリオに書かれた外部サイトへアクセスする
+  （サンプルは Google / GitHub）。出力先の `result/ss/`・`result/videos/` は Git 管理外。
+- **自動テストは存在しない**。挙動を変える変更では、確認手順（使用したシナリオと期待結果）を提示する。
 
 ## セキュリティ要件（MUST）
 
@@ -119,14 +155,10 @@
 
 ### records自動更新規約（MUST）
 
-- 記述仕様の唯一の参照元は `docs/records/spec/FORMAT.md`。定義されていないキーを独自追加しない
-- 更新対象は `docs/records/managed/` 配下の `BACKLOG.md` / `DESIGN.md` / `EXECUTE.md`
-- 各ファイルは `COPILOT_RECORDS:BEGIN` と `COPILOT_RECORDS:END` の間のみ更新する
-  （マーカー名は Copilot 導入時の命名を継続利用しており、全エージェント共通です）
-- `BACKLOG.md` / `EXECUTE.md` は YAML の配列要素（`- key: value` 形式）を1件単位で追記・更新・削除し、
-  追加は新着順（先頭追加）で行う
-- `DESIGN.md` は同一要件の再実装用プロンプトとして文書全体を最新版へ更新する
-- 記録ファイル本体はユーザ手動編集を前提にしない（必要変更はプロンプト指示経由）
+- 記述仕様（キー・許容値・YAMLの体裁・追記順・更新手順）の唯一の参照元は `docs/records/spec/FORMAT.md`。
+  更新前に必ず読み、定義されていないキーを独自追加しない
+- 更新対象は `docs/records/managed/` 配下の `BACKLOG.md` / `DESIGN.md` / `EXECUTE.md` の
+  `COPILOT_RECORDS:BEGIN` 〜 `COPILOT_RECORDS:END` の間のみ（マーカー名は全エージェント共通）
 
 ### 記録対象（MUST）
 
