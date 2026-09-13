@@ -75,4 +75,9 @@ const main = async function () {
 }
 
 // exec main
-main()
+main().catch((e) => {
+  // runtime error: output error and exit code 1
+  plUtil.logInfo('[ERROR] playwright-projector failed')
+  plUtil.logInfo(e && e.stack ? e.stack : String(e))
+  process.exitCode = 1
+})

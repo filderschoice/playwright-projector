@@ -5,6 +5,30 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-09-13 23:39
+  summary: シナリオ実行中の例外でもページ・コンテキスト・ブラウザサーバーを閉じ、動画を保存してから終了コード1で終了する
+  details:
+    変更内容: >-
+      runPlaywright.exec のブラウザ接続以降を try/finally で囲み、例外時もページとコンテキストのクローズ、
+      動画保存、ブラウザサーバーのクローズを行うようにした。後始末の各手順は失敗しても警告ログのみとし、
+      元の例外を隠さない。index.js は main の例外を捕捉してエラーとスタックを出力し process.exitCode を1にする。
+      修正前も未処理 rejection により終了コードは1だったが、後始末と動画保存は行われていなかった。正常系の手順と順序は変更していない
+    変更ファイル:
+      - index.js
+      - src/runPlaywright.js
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+    検証コマンド: >-
+      scratchpad で plCore をスタブへ差し替えた node -r stub-core.js index.js（途中で例外を投げるシナリオと正常シナリオ、
+      動画設定あり）を修正前後で実行 /
+      npx --no-install eslint index.js src / npx --no-install prettier --check index.js src /
+      npx markdownlint-cli2（品質ゲート定義のとおり） / 記録ファイルYAMLの safe_load / npm audit --omit=dev
+    検証結果: >-
+      成功 - 例外時に page.close・context.close・video.saveAs・close が順に呼ばれ終了コード1、正常時は同順で終了コード0。
+      修正前は例外時に後始末が一切呼ばれないことを確認。ESLint・Prettier・記録YAMLは成功。
+      Markdown は既存 README の38件のみ（BL-001で対応）。npm audit は playwright の high 1件（BL-018で対応）
+    関連ID:
+      - BL-010
 - date: 2026-09-13 23:38
   summary: getArgs による起動引数の累積と proxyInfo が null のときの例外を修正
   details:
