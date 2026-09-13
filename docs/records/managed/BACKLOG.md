@@ -5,6 +5,79 @@
 <!-- COPILOT_RECORDS:BEGIN -->
 <!-- markdownlint-disable-next-line MD041 -->
 ```yaml
+- id: BL-038
+  区分: 品質ゲート
+  タスク内容: >-
+    導入完了チェックリスト（docs/guidelines/ADOPTION.md 第8節）の未解消項目を解消するか判断する。
+    .github/CODEOWNERS（1行目・3行目）が実在しない @your-org/ai-platform 等を指し、
+    templates/app-guardrail-template.yaml に replace-me が5件、templates/model-risk-register-template.csv に2件残っている
+  優先度: P3
+  状態: ブロック
+  担当: ユーザー
+  完了条件: >-
+    レビュー担当（CODEOWNERS）の実在チーム・個人と、テンプレートの採否（本リポジトリは生成AIアプリではないため不要とするか）を
+    ユーザーが決定し、決定内容に基づいてファイルが更新または削除されている
+  依存: []
+  根拠: >-
+    CODEOWNERS はレビュー承認の統制に、テンプレートは組織のリスク判断に関わり、エージェントが既定値で埋めると
+    実在しない承認者や根拠の無いリスク登録を作ってしまうため、自律ループでは起票のみとする
+- id: BL-037
+  区分: 品質ゲート
+  タスク内容: >-
+    docs/guidelines/ADOPTION.md の立ち位置の誤りを直す。3行目「本リポジトリで管理している…ルール」、54行目「配布元では」、
+    93行目「配布元（本リポジトリ）」が本リポジトリを配布元として書いているが、本リポジトリ（playwright-projector）は
+    ルールの配布先である。あわせて導入資産一覧（第1節）に docs/guidelines/README.md と .markdownlint-cli2.yaml
+    （CLAUDE.md の品質ゲートが前提とする設定）が無い
+  優先度: P3
+  状態: 未着手
+  担当: AIエージェント
+  完了条件: >-
+    ADOPTION.md が配布元リポジトリと配布先（本リポジトリ）を取り違えずに記述され、導入資産一覧に上記2ファイルが載っている。
+    配布元由来の汎用記述（手順・チェックリスト）の意味は変えない。markdownlint が 0 issues
+  依存: []
+- id: BL-036
+  区分: 品質ゲート
+  タスク内容: >-
+    開発者向け・エージェント向け文書の実装との乖離と不整合を直す。
+    (1) .github/copilot-instructions.md「変更時の制約」の「ブラウザ引数（getArgs が配列へ追記する）をモジュール変数で持つ」が、
+    getArgs は複製へ追記しモジュール変数を変更しない現行実装（src/core/plCore.js の getArgs）と異なる。
+    (2) CONTRIBUTING.md「変更手順」2が「ルールファイルを追加または更新」のみで、アプリ本体の変更時のテスト・README 同時更新が無い。
+    (3) CONTRIBUTING.md 101行目「導入可否は BACKLOG で判断待ち」が時点情報。
+    (4) CONTRIBUTING.md「ドキュメント構成」表に README.md / README_ja.md、.claude/skills/、templates/ が無い。
+    (5) CONTRIBUTING.md 29行目はPR説明へ目的・影響範囲・ロールバック方針を求めるが、正本の
+    .github/instructions/pr.instructions.md の構成に影響範囲・ロールバック方針の欄が無く、
+    .github/PULL_REQUEST_TEMPLATE.md は英語のコメント2行のみで構成を示していない
+  優先度: P2
+  状態: 未着手
+  担当: AIエージェント
+  完了条件: >-
+    (1)〜(5) が解消し、PR説明の構成が pr.instructions.md を正本として CONTRIBUTING.md・PRテンプレートと矛盾しない。
+    規範（禁止事項・承認要件）の追加・削除は行わない。markdownlint が 0 issues、npm test が成功
+  依存: []
+  根拠: >-
+    (5) は CONTRIBUTING.md に既に定められたPR記載要件を正本の構成へ反映するもので、新しい規範の追加ではない。
+    PRテンプレートは見出しのみを置き、各見出しの説明は正本（pr.instructions.md）への参照とすることで二重管理を避ける
+- id: BL-035
+  区分: 品質ゲート
+  タスク内容: >-
+    README.md / README_ja.md の実装との乖離と誤記を直す。
+    (1) CLI オプション（index.js の -c/-s/-a/--version、DESIGN.md FR-01）の説明が無く、別名のファイルを使う方法が分からない。
+    (2) README.md 16行目「playright」、両 README の「Github」の誤記。
+    (3) README.md 43行目「[see below]」、README_ja.md 41行目「[後述]」がリンクになっておらず参照先が不明で、
+    README.md には auth フォルダの説明文自体が無い。
+    (4) 両 README のコンフィグ例の video.file の字下げが1文字で、conf/plConfig.sample.yaml（2文字）と異なる。
+    (5) README.md 9〜10行目の英文が日本語版と意味が異なる（「because it's a simple way」の主語が曖昧で、本ツールが簡易な試用向けである旨が伝わらない）。
+    (6) シナリオ内容（input の value 等）が実行ログへそのまま出力されること（src/runPlaywright.js の logDebug）と、
+    スクリーンショット・動画の保存ファイル名（DESIGN.md FR-08・FR-10）が書かれていない
+  優先度: P2
+  状態: 未着手
+  担当: AIエージェント
+  完了条件: >-
+    (1)〜(6) が両 README で解消し、日英の記載内容が一致している。既存の表の構成（test/docs.test.js が読む
+    パラメータ表・Scenario Type 表の1列目）は維持し、npm test が成功、markdownlint が 0 issues
+  依存: []
+  根拠: >-
+    (6) はマスク方式を決める BL-013（要確認）の判断を先取りせず、現行の挙動を利用者へ注意喚起するだけに留める
 - id: BL-034
   区分: 品質ゲート
   タスク内容: >-
