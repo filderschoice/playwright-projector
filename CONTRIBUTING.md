@@ -9,8 +9,9 @@
 ## 変更手順
 
 1. 規定ブランチからブランチを作成します。
-2. ルールファイルを追加または更新します。
-3. `CHANGELOG.md` を更新します。
+2. 変更を実施します。挙動を変える変更では単体テストを追加・更新し（「単体テストのローカル実行」参照）、
+   シナリオ種別・設定キーを変更した場合は両 README と `conf/*.sample.yaml` も更新します。
+3. ドキュメント・ルールの変更は `CHANGELOG.md` を、コード修正を伴う変更は `docs/records/managed/EXECUTE.md` を更新します。
 4. 根拠とリスクメモを添えてプルリクエストを作成します（説明文の構成は `.github/instructions/pr.instructions.md`）。
 
 ## レビュー要件
@@ -98,7 +99,7 @@ AIエージェントが人の応答を待たずに複数イテレーションを
 
 ## 単体テストのローカル実行
 
-本リポジトリには GitHub Actions のワークフローが無く、CIでの自動チェックはありません（導入可否は BACKLOG で判断待ち）。
+本リポジトリには GitHub Actions のワークフローが無く、CIでの自動チェックはありません（導入の検討は `BACKLOG.md` で管理します）。
 プルリクエスト作成前に、`CLAUDE.md`「本リポジトリの品質ゲート定義」のコマンド（`npm test` と Markdownlint を含む）を
 ローカル実行して指摘を解消してください。
 
@@ -130,10 +131,13 @@ AIエージェントが人の応答を待たずに複数イテレーションを
 
 | パス | 役割 | 詳細 |
 | --- | --- | --- |
+| `README_ja.md` / `README.md` | 利用者向けの仕様（コンフィグ・シナリオ・Authファイル、CLI オプション） | 日英で同じ内容を維持する |
 | `rules/` | ガードレール定義の正本 | `guardrails-unified.v1.md` |
+| `templates/` | アプリ別ガードレール設定・モデルリスク登録簿のテンプレート | `docs/guidelines/ADOPTION.md` |
 | `docs/guidelines/` | 複数プロジェクトで再利用するガイドライン | `docs/guidelines/README.md` |
 | `docs/records/spec/` | 記録ファイルの記述仕様（唯一の参照元） | `docs/records/spec/FORMAT.md` |
 | `docs/records/managed/` | AIエージェント管理の記録本体（手動編集禁止） | `docs/records/README.md` |
+| `.claude/skills/` | Claude Code のオンデマンド手順 | 「エージェント指示ファイルの構成規約」 |
 
 ## 例外管理
 

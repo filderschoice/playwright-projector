@@ -5,6 +5,22 @@
 <!-- COPILOT_RECORDS:BEGIN -->
 <!-- markdownlint-disable-next-line MD041 -->
 ```yaml
+- id: BL-038
+  区分: 品質ゲート
+  タスク内容: >-
+    導入完了チェックリスト（docs/guidelines/ADOPTION.md 第8節）の未解消項目を解消するか判断する。
+    .github/CODEOWNERS（1行目・3行目）が実在しない @your-org/ai-platform 等を指し、
+    templates/app-guardrail-template.yaml に replace-me が5件、templates/model-risk-register-template.csv に2件残っている
+  優先度: P3
+  状態: ブロック
+  担当: ユーザー
+  完了条件: >-
+    レビュー担当（CODEOWNERS）の実在チーム・個人と、テンプレートの採否（本リポジトリは生成AIアプリではないため不要とするか）を
+    ユーザーが決定し、決定内容に基づいてファイルが更新または削除されている
+  依存: []
+  根拠: >-
+    CODEOWNERS はレビュー承認の統制に、テンプレートは組織のリスク判断に関わり、エージェントが既定値で埋めると
+    実在しない承認者や根拠の無いリスク登録を作ってしまうため、自律ループでは起票のみとする
 - id: BL-034
   区分: 品質ゲート
   タスク内容: >-
